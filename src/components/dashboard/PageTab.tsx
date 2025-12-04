@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { AvatarUpload } from '@/components/AvatarUpload';
 import { SortableLink } from '@/components/SortableLink';
 import {
@@ -37,6 +38,8 @@ interface Profile {
   instagram_url: string | null;
   linkedin_url: string | null;
   website_url: string | null;
+  location?: string | null;
+  revenue?: string | null;
 }
 
 interface CustomLink {
@@ -44,6 +47,10 @@ interface CustomLink {
   title: string;
   url: string;
   position: number;
+  status?: string;
+  category?: string;
+  icon?: string;
+  size?: string;
 }
 
 interface PageTabProps {
@@ -53,19 +60,19 @@ interface PageTabProps {
   onProfileChange: (profile: Profile) => void;
   onLinksChange: (links: CustomLink[]) => void;
   onAddLink: () => void;
-  onUpdateLink: (id: string, field: 'title' | 'url', value: string) => void;
+  onUpdateLink: (id: string, field: keyof CustomLink, value: string) => void;
   onSaveLink: (link: CustomLink) => void;
   onDeleteLink: (id: string) => void;
   onAvatarUpload: (url: string) => void;
 }
 
 const socialIcons = [
-  { id: 'twitter', icon: Twitter, field: 'twitter_url' as const },
-  { id: 'github', icon: Github, field: 'github_url' as const },
-  { id: 'instagram', icon: Instagram, field: 'instagram_url' as const },
-  { id: 'linkedin', icon: Linkedin, field: 'linkedin_url' as const },
-  { id: 'youtube', icon: Youtube, field: 'website_url' as const },
-  { id: 'mail', icon: Mail, field: 'website_url' as const },
+  { id: 'twitter', icon: Twitter, field: 'twitter_url' as const, placeholder: 'https://twitter.com/username' },
+  { id: 'github', icon: Github, field: 'github_url' as const, placeholder: 'https://github.com/username' },
+  { id: 'instagram', icon: Instagram, field: 'instagram_url' as const, placeholder: 'https://instagram.com/username' },
+  { id: 'linkedin', icon: Linkedin, field: 'linkedin_url' as const, placeholder: 'https://linkedin.com/in/username' },
+  { id: 'youtube', icon: Youtube, field: 'website_url' as const, placeholder: 'https://youtube.com/@channel' },
+  { id: 'mail', icon: Mail, field: 'website_url' as const, placeholder: 'mailto:email@example.com' },
 ];
 
 export function PageTab({
@@ -80,9 +87,10 @@ export function PageTab({
   onDeleteLink,
   onAvatarUpload,
 }: PageTabProps) {
-  const [activeSocial, setActiveSocial] = useState<string | null>(
-    profile.twitter_url ? 'twitter' : null
-  );
+  const [activeSocial, setActiveSocial] = useState<string | null>(null);
+  const [locationOpen, setLocationOpen] = useState(false);
+  const [revenueOpen, setRevenueOpen] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -131,21 +139,76 @@ export function PageTab({
 
       {/* Quick Action Buttons */}
       <div className="flex items-center gap-2 text-muted-foreground">
-        <a href="#" className="text-sm">Markdown guide</a>
+        <a href="#" className="text-sm hover:text-foreground transition-colors">Markdown guide</a>
         <span className="text-xs">↗</span>
       </div>
 
       {/* Location, Revenue, Contact icons */}
       <div className="flex items-center gap-3 border-t border-border/50 pt-6">
-        <button className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
-          <MapPin className="w-5 h-5" />
-        </button>
-        <button className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
-          <DollarSign className="w-5 h-5" />
-        </button>
-        <button className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
-          <Mail className="w-5 h-5" />
-        </button>
+        {/* Location */}
+        <Popover open={locationOpen} onOpenChange={setLocationOpen}>
+          <PopoverTrigger asChild>
+            <button className={cn(
+              "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+              profile.location ? "bg-pink-500 text-white" : "bg-secondary text-muted-foreground hover:text-foreground"
+            )}>
+              <MapPin className="w-5 h-5" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64 p-3">
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Location</label>
+              <Input
+                value={profile.location || ''}
+                onChange={(e) => onProfileChange({ ...profile, location: e.target.value })}
+                placeholder="San Francisco, CA"
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        {/* Revenue */}
+        <Popover open={revenueOpen} onOpenChange={setRevenueOpen}>
+          <PopoverTrigger asChild>
+            <button className={cn(
+              "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+              profile.revenue ? "bg-pink-500 text-white" : "bg-secondary text-muted-foreground hover:text-foreground"
+            )}>
+              <DollarSign className="w-5 h-5" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64 p-3">
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Monthly Revenue</label>
+              <Input
+                value={profile.revenue || ''}
+                onChange={(e) => onProfileChange({ ...profile, revenue: e.target.value })}
+                placeholder="$5k/mo"
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        {/* Contact Email */}
+        <Popover open={emailOpen} onOpenChange={setEmailOpen}>
+          <PopoverTrigger asChild>
+            <button className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+              <Mail className="w-5 h-5" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64 p-3">
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Contact Email</label>
+              <Input
+                type="email"
+                placeholder="you@email.com"
+              />
+              <p className="text-xs text-muted-foreground">
+                Enable email subscriptions for your profile visitors
+              </p>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Add Startup Button */}
@@ -218,7 +281,7 @@ export function PageTab({
                   ...profile, 
                   [activeSocialData.field]: e.target.value 
                 })}
-                placeholder={`https://x.com/username`}
+                placeholder={activeSocialData.placeholder}
                 className="flex-1"
               />
               <Button 

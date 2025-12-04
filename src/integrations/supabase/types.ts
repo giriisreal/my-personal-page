@@ -16,26 +16,38 @@ export type Database = {
     Tables: {
       custom_links: {
         Row: {
+          category: string | null
           created_at: string
+          icon: string | null
           id: string
           position: number | null
           profile_id: string
+          size: string | null
+          status: string | null
           title: string
           url: string
         }
         Insert: {
+          category?: string | null
           created_at?: string
+          icon?: string | null
           id?: string
           position?: number | null
           profile_id: string
+          size?: string | null
+          status?: string | null
           title: string
           url: string
         }
         Update: {
+          category?: string | null
           created_at?: string
+          icon?: string | null
           id?: string
           position?: number | null
           profile_id?: string
+          size?: string | null
+          status?: string | null
           title?: string
           url?: string
         }
@@ -94,6 +106,8 @@ export type Database = {
           id: string
           instagram_url: string | null
           linkedin_url: string | null
+          location: string | null
+          revenue: string | null
           twitter_url: string | null
           updated_at: string
           user_id: string
@@ -109,6 +123,8 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           linkedin_url?: string | null
+          location?: string | null
+          revenue?: string | null
           twitter_url?: string | null
           updated_at?: string
           user_id: string
@@ -124,6 +140,8 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           linkedin_url?: string | null
+          location?: string | null
+          revenue?: string | null
           twitter_url?: string | null
           updated_at?: string
           user_id?: string
@@ -131,6 +149,35 @@ export type Database = {
           website_url?: string | null
         }
         Relationships: []
+      }
+      subscribers: {
+        Row: {
+          email: string
+          id: string
+          profile_id: string
+          subscribed_at: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          profile_id: string
+          subscribed_at?: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          profile_id?: string
+          subscribed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscribers_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
