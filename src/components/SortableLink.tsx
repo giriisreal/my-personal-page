@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { GripVertical, Trash2, Link2, DollarSign, Tag, Play, Maximize2, Check } from 'lucide-react';
+import { GripVertical, Trash2, Link2, DollarSign, Tag, Play, Maximize2, Check, ImagePlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 interface CustomLink {
   id: string;
   title: string;
@@ -59,6 +60,45 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
   const [sizeOpen, setSizeOpen] = useState(false);
   const [tempUrl, setTempUrl] = useState(link.url);
   const [tempRevenue, setTempRevenue] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isImageUrl = (icon?: string) => icon?.startsWith('http') || icon?.startsWith('data:');
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${link.id}-${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('link-icons')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('link-icons')
+        .getPublicUrl(fileName);
+
+      onUpdate(link.id, 'icon', publicUrl);
+      onSave({ ...link, icon: publicUrl });
+      toast.success('Logo uploaded!');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const {
     attributes,
@@ -117,10 +157,28 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
           <GripVertical className="w-5 h-5" />
         </button>
         
-        {/* Link Icon */}
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center flex-shrink-0">
-          <span className="text-xl">{link.icon || '🚀'}</span>
-        </div>
+        {/* Link Icon with upload */}
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center flex-shrink-0 overflow-hidden hover:opacity-80 transition-opacity relative group"
+          disabled={uploading}
+        >
+          {isImageUrl(link.icon) ? (
+            <img src={link.icon} alt="Logo" className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-xl">{link.icon || '🚀'}</span>
+          )}
+          <div className="absolute inset-0 bg-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <ImagePlus className="w-5 h-5 text-background" />
+          </div>
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+        />
         
         <div className="flex-1 min-w-0">
           <Input

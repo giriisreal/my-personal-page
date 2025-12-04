@@ -54,6 +54,8 @@ export function PhonePreview({ profile, customLinks }: PhonePreviewProps) {
     ? `${window.location.origin}/${profile.username}` 
     : `/${profile.username}`;
 
+  const isImageUrl = (icon?: string) => icon?.startsWith('http') || icon?.startsWith('data:');
+
   const socialLinks = [
     { icon: Twitter, url: profile.twitter_url, name: 'Twitter' },
     { icon: Instagram, url: profile.instagram_url, name: 'Instagram' },
@@ -168,7 +170,11 @@ export function PhonePreview({ profile, customLinks }: PhonePreviewProps) {
                     key={link.id}
                     className={`flex items-center gap-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors ${sizeClass}`}
                   >
-                    <span className="text-lg flex-shrink-0">{link.icon || '🚀'}</span>
+                    {isImageUrl(link.icon) ? (
+                      <img src={link.icon} alt="" className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
+                    ) : (
+                      <span className="text-lg flex-shrink-0">{link.icon || '🚀'}</span>
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-gray-900 truncate">{link.title || 'Untitled'}</p>
                       <div className="flex items-center gap-1">
