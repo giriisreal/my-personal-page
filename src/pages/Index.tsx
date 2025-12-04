@@ -1,16 +1,7 @@
 import { Navbar } from '@/components/Navbar';
 import { UsernameInput } from '@/components/UsernameInput';
-import { ProfileCard } from '@/components/ProfileCard';
 import { Sparkles, Users, BarChart3, Link2 } from 'lucide-react';
 
-const featuredProfiles = [
-  { username: 'alex', displayName: 'Alex Chen', bio: '5 projects' },
-  { username: 'sarah', displayName: 'Sarah Miller', bio: '12 projects' },
-  { username: 'mike', displayName: 'Mike Johnson', bio: '8 projects' },
-  { username: 'emma', displayName: 'Emma Wilson', bio: '3 projects' },
-  { username: 'james', displayName: 'James Lee', bio: '15 projects' },
-  { username: 'olivia', displayName: 'Olivia Brown', bio: '7 projects' },
-];
 
 const features = [
   {
@@ -60,19 +51,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Featured Profiles */}
-      <section className="py-16 px-4 bg-secondary/30">
-        <div className="container mx-auto">
-          <h2 className="text-2xl font-bold text-center mb-8">Featured Creators</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {featuredProfiles.map((profile, i) => (
-              <div key={profile.username} className="animate-slide-up" style={{ animationDelay: `${0.1 * i}s` }}>
-                <ProfileCard {...profile} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Features */}
       <section className="py-20 px-4">
