@@ -291,29 +291,31 @@ export default function Dashboard() {
     <div className="min-h-screen bg-card">
       {/* Header */}
       <header className="border-b border-border/30 bg-card/80 backdrop-blur-lg sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="container mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
           <DashboardTabs activeTab={activeTab} onTabChange={setActiveTab} />
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Button 
               variant="ghost" 
               onClick={signOut}
-              className="text-muted-foreground"
+              className="text-muted-foreground text-sm px-2 sm:px-4"
             >
-              Log out
+              <span className="hidden sm:inline">Log out</span>
+              <span className="sm:hidden">Exit</span>
             </Button>
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-2">
-              <Sparkles className="w-4 h-4" />
-              DEPLOY
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-1.5 sm:gap-2 text-sm px-3 sm:px-4">
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">DEPLOY</span>
+              <span className="sm:hidden">GO</span>
             </Button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         {/* Left Panel - Editor */}
-        <div className="flex-1 p-8 max-w-3xl">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 max-w-3xl w-full">
           {activeTab === 'page' && (
             <PageTab
               profile={profile}

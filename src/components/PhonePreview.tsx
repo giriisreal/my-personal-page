@@ -266,41 +266,47 @@ export function PhonePreview({ profile, customLinks, theme = 'light', font = 'dm
                 return (
                   <div 
                     key={link.id}
-                    className={cn("flex items-center gap-2 rounded-lg transition-colors", sizeClass)}
+                    className={cn("rounded-lg transition-colors", sizeClass)}
                     style={{ backgroundColor: linkBgColor }}
                   >
-                    {isImageUrl(link.icon) ? (
-                      <img src={link.icon} alt="" className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
-                    ) : (
-                      <span className="text-lg flex-shrink-0">{link.icon || '🚀'}</span>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p 
-                        className="text-xs font-semibold truncate"
-                        style={{ color: hasCustomColor ? textColor : (darkBg ? '#fff' : '#1a1a1a') }}
-                      >
-                        {link.title || 'Untitled'}
-                      </p>
-                      <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
+                      {isImageUrl(link.icon) ? (
+                        <img src={link.icon} alt="" className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
+                      ) : (
+                        <span className="text-lg flex-shrink-0">{link.icon || '🚀'}</span>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p 
+                          className="text-xs font-semibold truncate"
+                          style={{ color: hasCustomColor ? textColor : (darkBg ? '#fff' : '#1a1a1a') }}
+                        >
+                          {link.title || 'Untitled'}
+                        </p>
                         <p 
                           className="text-[10px] truncate"
                           style={{ color: hasCustomColor ? (textColor === 'white' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)') : (darkBg ? 'rgba(255,255,255,0.6)' : '#6b7280') }}
                         >
                           {link.url ? link.url.replace(/^https?:\/\//, '').split('/')[0] : 'No URL'}
                         </p>
-                        {categoryLabel && (
-                          <span 
-                            className="text-[9px]"
-                            style={{ color: hasCustomColor ? (textColor === 'white' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)') : (darkBg ? 'rgba(255,255,255,0.5)' : '#9ca3af') }}
-                          >
-                            • {categoryLabel}
-                          </span>
-                        )}
                       </div>
                     </div>
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0 ${statusInfo.color}`}>
-                      {statusInfo.label}
-                    </span>
+                    {/* Status and Category row */}
+                    <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${statusInfo.color}`}>
+                        {statusInfo.label}
+                      </span>
+                      {categoryLabel && (
+                        <span 
+                          className="text-[9px] px-1.5 py-0.5 rounded-full"
+                          style={{ 
+                            backgroundColor: hasCustomColor ? (textColor === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)') : (darkBg ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.05)'),
+                            color: hasCustomColor ? (textColor === 'white' ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.7)') : (darkBg ? 'rgba(255,255,255,0.7)' : '#6b7280')
+                          }}
+                        >
+                          {categoryLabel}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 );
               })}
