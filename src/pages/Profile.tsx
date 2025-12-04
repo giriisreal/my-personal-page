@@ -214,7 +214,7 @@ export default function Profile() {
                   <Button 
                     type="submit" 
                     disabled={subscribing}
-                    className="h-12 px-5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg"
+                    className="h-12 px-5 bg-foreground hover:bg-foreground/90 text-background font-semibold rounded-lg"
                   >
                     {subscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Subscribe'}
                   </Button>

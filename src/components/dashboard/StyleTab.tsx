@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
 
 const FONTS = [
   { id: 'dm-sans', name: 'DM Sans', className: 'font-sans' },
@@ -8,17 +7,43 @@ const FONTS = [
   { id: 'mono', name: 'Mono', className: 'font-mono' },
 ];
 
+// Theme pairs: [background, accent]
 const THEMES = [
-  { id: 'light', name: 'Light', bg: 'bg-white', text: 'text-black' },
-  { id: 'dark', name: 'Dark', bg: 'bg-zinc-900', text: 'text-white' },
-  { id: 'purple', name: 'Purple', bg: 'bg-gradient-to-br from-purple-500 to-violet-600', text: 'text-white' },
-  { id: 'blue', name: 'Blue', bg: 'bg-gradient-to-br from-blue-500 to-cyan-500', text: 'text-white' },
-  { id: 'green', name: 'Green', bg: 'bg-gradient-to-br from-emerald-500 to-teal-500', text: 'text-white' },
-  { id: 'indigo', name: 'Indigo', bg: 'bg-gradient-to-br from-indigo-500 to-purple-600', text: 'text-white' },
-  { id: 'rose', name: 'Rose', bg: 'bg-gradient-to-br from-rose-400 to-pink-600', text: 'text-white' },
-  { id: 'teal', name: 'Teal', bg: 'bg-gradient-to-br from-teal-400 to-cyan-600', text: 'text-white' },
-  { id: 'slate', name: 'Slate', bg: 'bg-gradient-to-br from-slate-600 to-slate-800', text: 'text-white' },
-  { id: 'amber', name: 'Amber', bg: 'bg-gradient-to-br from-amber-400 to-orange-500', text: 'text-white' },
+  { id: 'light', colors: ['#ffffff', '#1a1a1a'] },
+  { id: 'purple', colors: ['#ffffff', '#7c3aed'] },
+  { id: 'green', colors: ['#ffffff', '#10b981'] },
+  { id: 'rose', colors: ['#ffffff', '#f43f5e'] },
+  { id: 'muted', colors: ['#f5f5f4', '#a8a29e'] },
+  { id: 'pink', colors: ['#fdf2f8', '#ec4899'] },
+  { id: 'white', colors: ['#ffffff', '#ffffff'] },
+  
+  { id: 'blue-light', colors: ['#dbeafe', '#3b82f6'] },
+  { id: 'indigo', colors: ['#e0e7ff', '#6366f1'] },
+  { id: 'emerald', colors: ['#d1fae5', '#059669'] },
+  { id: 'lavender', colors: ['#ede9fe', '#8b5cf6'] },
+  { id: 'peach', colors: ['#fef3c7', '#f59e0b'] },
+  { id: 'navy', colors: ['#1e3a5f', '#60a5fa'] },
+  
+  { id: 'sky', colors: ['#e0f2fe', '#0ea5e9'] },
+  { id: 'slate', colors: ['#e2e8f0', '#64748b'] },
+  { id: 'teal-duo', colors: ['#ccfbf1', '#14b8a6'] },
+  { id: 'violet', colors: ['#f3e8ff', '#a855f7'] },
+  { id: 'amber', colors: ['#fef9c3', '#eab308'] },
+  { id: 'dark-blue', colors: ['#172554', '#3b82f6'] },
+  
+  { id: 'coral', colors: ['#fff1f2', '#fb7185'] },
+  { id: 'yellow-pink', colors: ['#fef08a', '#ec4899'] },
+  { id: 'cyan-emerald', colors: ['#a5f3fc', '#10b981'] },
+  { id: 'neutral', colors: ['#fafafa', '#525252'] },
+  { id: 'warm-gray', colors: ['#f5f5f4', '#78716c'] },
+  { id: 'midnight', colors: ['#0f172a', '#38bdf8'] },
+  
+  { id: 'blush', colors: ['#fce7f3', '#f472b6'] },
+  { id: 'sunset', colors: ['#fed7aa', '#ea580c'] },
+  { id: 'forest', colors: ['#bbf7d0', '#16a34a'] },
+  { id: 'cool-gray', colors: ['#f3f4f6', '#6b7280'] },
+  { id: 'stone', colors: ['#f5f5f4', '#a8a29e'] },
+  { id: 'ocean', colors: ['#0c4a6e', '#7dd3fc'] },
 ];
 
 interface StyleTabProps {
@@ -28,10 +53,9 @@ interface StyleTabProps {
 
 export function StyleTab({ profileId, onStyleChange }: StyleTabProps) {
   const [selectedFont, setSelectedFont] = useState('dm-sans');
-  const [selectedTheme, setSelectedTheme] = useState('dark');
+  const [selectedTheme, setSelectedTheme] = useState('purple');
 
   useEffect(() => {
-    // Load saved styles from localStorage
     const savedFont = localStorage.getItem(`style_font_${profileId}`);
     const savedTheme = localStorage.getItem(`style_theme_${profileId}`);
     if (savedFont) setSelectedFont(savedFont);
@@ -51,70 +75,79 @@ export function StyleTab({ profileId, onStyleChange }: StyleTabProps) {
   };
 
   return (
-    <div className="space-y-8 max-w-xl">
+    <div className="space-y-8 max-w-2xl">
       {/* Font Section */}
       <div>
         <h3 className="text-sm text-muted-foreground uppercase tracking-wide mb-4">Font</h3>
-        <div className="flex items-center gap-3">
-          {FONTS.map((font) => (
-            <button
-              key={font.id}
-              onClick={() => handleFontChange(font.id)}
-              className={cn(
-                "w-16 h-16 bg-secondary rounded-xl flex items-center justify-center text-2xl font-bold hover:bg-secondary/80 transition-all relative",
-                font.className,
-                selectedFont === font.id && "ring-2 ring-primary ring-offset-2 ring-offset-background"
-              )}
-            >
-              Aa
-              {selectedFont === font.id && (
-                <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                  <Check className="w-3 h-3 text-primary-foreground" />
-                </div>
-              )}
-            </button>
-          ))}
+        <div className="inline-flex items-center bg-secondary rounded-xl p-1">
+          <button
+            onClick={() => handleFontChange('dm-sans')}
+            className={cn(
+              "px-6 py-3 rounded-lg text-xl font-bold transition-all font-sans",
+              selectedFont === 'dm-sans' 
+                ? "bg-background shadow-sm" 
+                : "hover:bg-background/50"
+            )}
+          >
+            Aa
+          </button>
         </div>
       </div>
 
       {/* Theme Section */}
       <div>
         <h3 className="text-sm text-muted-foreground uppercase tracking-wide mb-4">Theme</h3>
-        <div className="flex items-center gap-3 flex-wrap">
-          {THEMES.map((theme) => (
+        
+        {/* Light/Dark base options */}
+        <div className="flex gap-3 mb-4">
+          <button
+            onClick={() => handleThemeChange('light')}
+            className={cn(
+              "w-14 h-14 rounded-xl border-2 overflow-hidden transition-all",
+              selectedTheme === 'light' 
+                ? "border-primary ring-2 ring-primary/20" 
+                : "border-border hover:border-primary/50"
+            )}
+          >
+            <div className="w-full h-full bg-white" />
+          </button>
+          <button
+            onClick={() => handleThemeChange('purple')}
+            className={cn(
+              "w-14 h-14 rounded-xl border-2 overflow-hidden transition-all flex",
+              selectedTheme === 'purple' 
+                ? "border-primary ring-2 ring-primary/20" 
+                : "border-border hover:border-primary/50"
+            )}
+          >
+            <div className="w-1/2 h-full bg-white" />
+            <div className="w-1/2 h-full bg-violet-500" />
+          </button>
+        </div>
+
+        {/* Theme Grid */}
+        <div className="grid grid-cols-6 gap-3">
+          {THEMES.slice(2).map((theme) => (
             <button
               key={theme.id}
               onClick={() => handleThemeChange(theme.id)}
               className={cn(
-                "w-12 h-12 rounded-xl transition-all relative",
-                theme.bg,
-                selectedTheme === theme.id && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                "w-full aspect-square rounded-xl border-2 overflow-hidden transition-all flex",
+                selectedTheme === theme.id 
+                  ? "border-primary ring-2 ring-primary/20" 
+                  : "border-border hover:border-primary/50"
               )}
             >
-              {selectedTheme === theme.id && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Check className={cn("w-5 h-5", theme.text)} />
-                </div>
-              )}
+              <div 
+                className="w-1/2 h-full" 
+                style={{ backgroundColor: theme.colors[0] }} 
+              />
+              <div 
+                className="w-1/2 h-full" 
+                style={{ backgroundColor: theme.colors[1] }} 
+              />
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* Preview Section */}
-      <div>
-        <h3 className="text-sm text-muted-foreground uppercase tracking-wide mb-4">Preview</h3>
-        <div className={cn(
-          "rounded-2xl p-6 border border-border/50",
-          THEMES.find(t => t.id === selectedTheme)?.bg
-        )}>
-          <p className={cn(
-            "text-lg",
-            FONTS.find(f => f.id === selectedFont)?.className,
-            THEMES.find(t => t.id === selectedTheme)?.text
-          )}>
-            This is how your page will look with the selected font and theme.
-          </p>
         </div>
       </div>
     </div>
