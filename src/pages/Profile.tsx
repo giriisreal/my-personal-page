@@ -321,6 +321,7 @@ export default function Profile() {
                   const statusInfo = STATUS_LABELS[link.status || 'active'] || STATUS_LABELS.active;
                   const isLarge = link.size === 'large';
                   const linkColor = link.color || 'hsl(150, 80%, 35%)';
+                  const textColor = link.text_color || 'white';
                   
                   return (
                     <a
@@ -342,10 +343,10 @@ export default function Profile() {
                           )}
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-bold text-white text-lg">
+                          <h3 className="font-bold text-lg" style={{ color: textColor }}>
                             {link.title || 'Untitled'}
                           </h3>
-                          <p className="text-white/80 text-sm">
+                          <p className="text-sm" style={{ color: textColor, opacity: 0.8 }}>
                             {link.url ? link.url.replace(/^https?:\/\//, '').split('/')[0] : 'No description'}
                           </p>
                         </div>
@@ -357,7 +358,7 @@ export default function Profile() {
                           {statusInfo.label}
                         </span>
                         {link.category && (
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/20 text-white">
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/20" style={{ color: textColor }}>
                             {link.category}
                           </span>
                         )}
@@ -368,7 +369,7 @@ export default function Profile() {
                         <div className="mt-4 bg-white/10 rounded-lg p-3 [&_.bg-secondary]:bg-white/20">
                           <RevenueProgressBar 
                             revenue={link.live_revenue} 
-                            color="white"
+                            color={textColor}
                           />
                         </div>
                       )}
