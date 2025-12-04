@@ -9,6 +9,7 @@ import { GripVertical, Trash2, Link2, DollarSign, Tag, Play, Maximize2, Check, I
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { RevenueProgressBar } from './RevenueProgressBar';
 
 interface CustomLink {
   id: string;
@@ -573,6 +574,17 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
           <Trash2 className="w-4 h-4" />
         </button>
       </div>
+
+      {/* Revenue Progress Bar */}
+      {hasRevenue && (
+        <div className="px-4 pb-4 ml-9">
+          <RevenueProgressBar 
+            revenue={link.live_revenue!} 
+            color={link.color}
+            showMilestones
+          />
+        </div>
+      )}
     </div>
   );
 }
