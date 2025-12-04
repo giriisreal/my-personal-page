@@ -25,6 +25,8 @@ interface Profile {
   instagram_url: string | null;
   linkedin_url: string | null;
   website_url: string | null;
+  location?: string | null;
+  revenue?: string | null;
 }
 
 interface CustomLink {
@@ -32,6 +34,10 @@ interface CustomLink {
   title: string;
   url: string;
   position: number;
+  status?: string;
+  category?: string;
+  icon?: string;
+  size?: string;
 }
 
 interface PageView {
@@ -74,7 +80,7 @@ export default function Dashboard() {
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [profile?.display_name, profile?.bio, profile?.twitter_url, profile?.github_url, profile?.instagram_url, profile?.linkedin_url, profile?.website_url]);
+  }, [profile?.display_name, profile?.bio, profile?.twitter_url, profile?.github_url, profile?.instagram_url, profile?.linkedin_url, profile?.website_url, profile?.location, profile?.revenue]);
 
   const fetchProfile = async () => {
     if (!user) return;
@@ -151,6 +157,8 @@ export default function Dashboard() {
         instagram_url: profile.instagram_url,
         linkedin_url: profile.linkedin_url,
         website_url: profile.website_url,
+        location: profile.location,
+        revenue: profile.revenue,
       })
       .eq('id', profile.id);
 
@@ -183,7 +191,7 @@ export default function Dashboard() {
     if (error) toast({ title: 'Error', description: error.message, variant: 'destructive' });
   };
 
-  const updateLink = (id: string, field: 'title' | 'url', value: string) => {
+  const updateLink = (id: string, field: keyof CustomLink, value: string) => {
     setCustomLinks(customLinks.map(link => 
       link.id === id ? { ...link, [field]: value } : link
     ));
@@ -192,7 +200,14 @@ export default function Dashboard() {
   const saveLink = async (link: CustomLink) => {
     const { error } = await supabase
       .from('custom_links')
-      .update({ title: link.title, url: link.url })
+      .update({ 
+        title: link.title, 
+        url: link.url,
+        status: link.status,
+        category: link.category,
+        icon: link.icon,
+        size: link.size,
+      })
       .eq('id', link.id);
     if (error) toast({ title: 'Error', description: error.message, variant: 'destructive' });
   };
