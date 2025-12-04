@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const FONTS = [
-  { id: 'dm-sans', name: 'DM Sans', className: 'font-sans' },
-  { id: 'serif', name: 'Serif', className: 'font-serif' },
-  { id: 'mono', name: 'Mono', className: 'font-mono' },
+  { id: 'dm-sans', name: 'DM Sans', preview: 'Aa' },
+  { id: 'serif', name: 'Serif', preview: 'Aa' },
+  { id: 'mono', name: 'Mono', preview: 'Aa' },
 ];
 
 // Theme pairs: [background, accent]
@@ -54,6 +56,7 @@ interface StyleTabProps {
 export function StyleTab({ profileId, onStyleChange }: StyleTabProps) {
   const [selectedFont, setSelectedFont] = useState('dm-sans');
   const [selectedTheme, setSelectedTheme] = useState('purple');
+  const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
     const savedFont = localStorage.getItem(`style_font_${profileId}`);
@@ -64,14 +67,21 @@ export function StyleTab({ profileId, onStyleChange }: StyleTabProps) {
 
   const handleFontChange = (fontId: string) => {
     setSelectedFont(fontId);
-    localStorage.setItem(`style_font_${profileId}`, fontId);
+    setHasChanges(true);
     onStyleChange?.(fontId, selectedTheme);
   };
 
   const handleThemeChange = (themeId: string) => {
     setSelectedTheme(themeId);
-    localStorage.setItem(`style_theme_${profileId}`, themeId);
+    setHasChanges(true);
     onStyleChange?.(selectedFont, themeId);
+  };
+
+  const handleSave = () => {
+    localStorage.setItem(`style_font_${profileId}`, selectedFont);
+    localStorage.setItem(`style_theme_${profileId}`, selectedTheme);
+    setHasChanges(false);
+    toast.success('Style saved!');
   };
 
   return (
@@ -79,18 +89,25 @@ export function StyleTab({ profileId, onStyleChange }: StyleTabProps) {
       {/* Font Section */}
       <div>
         <h3 className="text-sm text-muted-foreground uppercase tracking-wide mb-4">Font</h3>
-        <div className="inline-flex items-center bg-secondary rounded-xl p-1">
-          <button
-            onClick={() => handleFontChange('dm-sans')}
-            className={cn(
-              "px-6 py-3 rounded-lg text-xl font-bold transition-all font-sans",
-              selectedFont === 'dm-sans' 
-                ? "bg-background shadow-sm" 
-                : "hover:bg-background/50"
-            )}
-          >
-            Aa
-          </button>
+        <div className="inline-flex items-center bg-secondary rounded-xl p-1 gap-1">
+          {FONTS.map((font) => (
+            <button
+              key={font.id}
+              onClick={() => handleFontChange(font.id)}
+              className={cn(
+                "px-6 py-3 rounded-lg text-xl font-bold transition-all",
+                font.id === 'dm-sans' && "font-sans",
+                font.id === 'serif' && "font-serif",
+                font.id === 'mono' && "font-mono",
+                selectedFont === font.id 
+                  ? "bg-background shadow-sm" 
+                  : "hover:bg-background/50"
+              )}
+              title={font.name}
+            >
+              {font.preview}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -149,6 +166,17 @@ export function StyleTab({ profileId, onStyleChange }: StyleTabProps) {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Save Button */}
+      <div className="pt-4">
+        <Button 
+          onClick={handleSave}
+          disabled={!hasChanges}
+          className="w-full sm:w-auto"
+        >
+          Save Style
+        </Button>
       </div>
     </div>
   );
