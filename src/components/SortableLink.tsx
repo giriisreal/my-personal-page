@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { GripVertical, Trash2, Link2, DollarSign, Tag, Play, Maximize2, Check, ImagePlus, Palette, RefreshCw, Loader2 } from 'lucide-react';
+import { GripVertical, Trash2, Link2, DollarSign, Tag, Play, Maximize2, Check, ImagePlus, Palette, RefreshCw, Loader2, Type } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -21,12 +21,18 @@ interface CustomLink {
   icon?: string;
   size?: string;
   color?: string;
+  text_color?: string;
   stripe_api_key?: string;
   lemonsqueezy_api_key?: string;
   lemonsqueezy_store_id?: string;
   live_revenue?: number;
   revenue_updated_at?: string;
 }
+
+const TEXT_COLOR_OPTIONS = [
+  { value: 'white', label: 'White' },
+  { value: 'black', label: 'Black' },
+];
 
 const COLOR_OPTIONS = [
   { value: 'hsl(150, 80%, 35%)', label: 'Green' },
@@ -83,6 +89,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
   const [statusOpen, setStatusOpen] = useState(false);
   const [sizeOpen, setSizeOpen] = useState(false);
   const [colorOpen, setColorOpen] = useState(false);
+  const [textColorOpen, setTextColorOpen] = useState(false);
   const [tempUrl, setTempUrl] = useState(link.url);
   const [uploading, setUploading] = useState(false);
   const [fetchingRevenue, setFetchingRevenue] = useState(false);
@@ -224,6 +231,12 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
     onUpdate(link.id, 'color', color);
     onSave({ ...link, color });
     setColorOpen(false);
+  };
+
+  const handleTextColorChange = (textColor: string) => {
+    onUpdate(link.id, 'text_color', textColor);
+    onSave({ ...link, text_color: textColor });
+    setTextColorOpen(false);
   };
 
   const hasRevenue = link.live_revenue !== null && link.live_revenue !== undefined;
@@ -558,6 +571,36 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                       link.color === color.value && "ring-2 ring-offset-2 ring-primary"
                     )}
                     style={{ backgroundColor: color.value }}
+                    title={color.label}
+                  />
+                ))}
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        {/* Text Color */}
+        <Popover open={textColorOpen} onOpenChange={setTextColorOpen}>
+          <PopoverTrigger asChild>
+            <button 
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors bg-secondary text-muted-foreground hover:text-foreground"
+            >
+              <Type className="w-4 h-4" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-40 p-2">
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground px-2 py-1">Text color</p>
+              <div className="flex gap-2 p-2">
+                {TEXT_COLOR_OPTIONS.map((color) => (
+                  <button
+                    key={color.value}
+                    onClick={() => handleTextColorChange(color.value)}
+                    className={cn(
+                      "w-10 h-10 rounded-lg transition-all border",
+                      color.value === 'white' ? 'bg-white border-gray-300' : 'bg-black border-black',
+                      link.text_color === color.value && "ring-2 ring-offset-2 ring-primary"
+                    )}
                     title={color.label}
                   />
                 ))}

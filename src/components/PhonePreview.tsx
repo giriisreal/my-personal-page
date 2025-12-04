@@ -23,6 +23,8 @@ interface CustomLink {
   icon?: string;
   category?: string;
   size?: string;
+  color?: string;
+  text_color?: string;
 }
 
 interface PhonePreviewProps {
@@ -257,12 +259,15 @@ export function PhonePreview({ profile, customLinks, theme = 'light', font = 'dm
                 const statusInfo = STATUS_LABELS[link.status || 'active'] || STATUS_LABELS.active;
                 const categoryLabel = CATEGORY_LABELS[link.category || ''] || '';
                 const sizeClass = getSizeClass(link.size);
+                const linkBgColor = link.color || (darkBg ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.03)');
+                const textColor = link.text_color || 'white';
+                const hasCustomColor = !!link.color;
                 
                 return (
                   <div 
                     key={link.id}
                     className={cn("flex items-center gap-2 rounded-lg transition-colors", sizeClass)}
-                    style={{ backgroundColor: darkBg ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.03)' }}
+                    style={{ backgroundColor: linkBgColor }}
                   >
                     {isImageUrl(link.icon) ? (
                       <img src={link.icon} alt="" className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
@@ -272,21 +277,21 @@ export function PhonePreview({ profile, customLinks, theme = 'light', font = 'dm
                     <div className="flex-1 min-w-0">
                       <p 
                         className="text-xs font-semibold truncate"
-                        style={{ color: darkBg ? '#fff' : '#1a1a1a' }}
+                        style={{ color: hasCustomColor ? textColor : (darkBg ? '#fff' : '#1a1a1a') }}
                       >
                         {link.title || 'Untitled'}
                       </p>
                       <div className="flex items-center gap-1">
                         <p 
                           className="text-[10px] truncate"
-                          style={{ color: darkBg ? 'rgba(255,255,255,0.6)' : '#6b7280' }}
+                          style={{ color: hasCustomColor ? (textColor === 'white' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)') : (darkBg ? 'rgba(255,255,255,0.6)' : '#6b7280') }}
                         >
                           {link.url ? link.url.replace(/^https?:\/\//, '').split('/')[0] : 'No URL'}
                         </p>
                         {categoryLabel && (
                           <span 
                             className="text-[9px]"
-                            style={{ color: darkBg ? 'rgba(255,255,255,0.5)' : '#9ca3af' }}
+                            style={{ color: hasCustomColor ? (textColor === 'white' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)') : (darkBg ? 'rgba(255,255,255,0.5)' : '#9ca3af') }}
                           >
                             • {categoryLabel}
                           </span>

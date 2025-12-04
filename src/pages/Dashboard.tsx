@@ -27,6 +27,8 @@ interface Profile {
   website_url: string | null;
   location?: string | null;
   revenue?: string | null;
+  theme?: string | null;
+  font?: string | null;
 }
 
 interface CustomLink {
@@ -39,6 +41,7 @@ interface CustomLink {
   icon?: string;
   size?: string;
   color?: string;
+  text_color?: string;
   stripe_api_key?: string;
   lemonsqueezy_api_key?: string;
   lemonsqueezy_store_id?: string;
@@ -79,15 +82,13 @@ export default function Dashboard() {
     }
   }, [user, authLoading, navigate]);
 
-  // Load saved style preferences
+  // Load saved style preferences from profile
   useEffect(() => {
-    if (profile?.id) {
-      const savedFont = localStorage.getItem(`style_font_${profile.id}`);
-      const savedTheme = localStorage.getItem(`style_theme_${profile.id}`);
-      if (savedFont) setSelectedFont(savedFont);
-      if (savedTheme) setSelectedTheme(savedTheme);
+    if (profile) {
+      setSelectedFont(profile.font || 'dm-sans');
+      setSelectedTheme(profile.theme || 'light');
     }
-  }, [profile?.id]);
+  }, [profile]);
 
   useEffect(() => {
     if (user) {
@@ -231,6 +232,7 @@ export default function Dashboard() {
         icon: link.icon,
         size: link.size,
         color: link.color,
+        text_color: link.text_color,
         live_revenue: link.live_revenue,
         revenue_updated_at: link.revenue_updated_at,
       })
@@ -327,7 +329,7 @@ export default function Dashboard() {
             />
           )}
 
-          {activeTab === 'style' && <StyleTab profileId={profile.id} onStyleChange={handleStyleChange} />}
+          {activeTab === 'style' && <StyleTab profileId={profile.id} initialFont={profile.font || 'dm-sans'} initialTheme={profile.theme || 'light'} onStyleChange={handleStyleChange} />}
 
           {activeTab === 'stats' && <StatsTab pageViews={pageViews} profileId={profile.id} />}
 
