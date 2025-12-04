@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { RevenueProgressBar } from '@/components/RevenueProgressBar';
 import { 
   Twitter, Github, Instagram, Linkedin, Globe, Youtube,
   ArrowLeft, Loader2, Sparkles, MapPin
@@ -293,7 +294,7 @@ export default function Profile() {
                         </div>
                       </div>
                       
-                      {/* Status Badge & Revenue */}
+                      {/* Status Badge & Category */}
                       <div className="mt-4 flex items-center gap-2 flex-wrap">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
                           {statusInfo.label}
@@ -303,12 +304,17 @@ export default function Profile() {
                             {link.category}
                           </span>
                         )}
-                        {link.live_revenue !== null && link.live_revenue !== undefined && (
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/30 text-white">
-                            ${link.live_revenue.toLocaleString()}/mo
-                          </span>
-                        )}
                       </div>
+
+                      {/* Revenue Progress Bar */}
+                      {link.live_revenue !== null && link.live_revenue !== undefined && (
+                        <div className="mt-4 bg-white/10 rounded-lg p-3 [&_.bg-secondary]:bg-white/20">
+                          <RevenueProgressBar 
+                            revenue={link.live_revenue} 
+                            color="white"
+                          />
+                        </div>
+                      )}
                     </a>
                   );
                 })}
