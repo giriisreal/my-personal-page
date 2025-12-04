@@ -79,6 +79,16 @@ export default function Dashboard() {
     }
   }, [user, authLoading, navigate]);
 
+  // Load saved style preferences
+  useEffect(() => {
+    if (profile?.id) {
+      const savedFont = localStorage.getItem(`style_font_${profile.id}`);
+      const savedTheme = localStorage.getItem(`style_theme_${profile.id}`);
+      if (savedFont) setSelectedFont(savedFont);
+      if (savedTheme) setSelectedTheme(savedTheme);
+    }
+  }, [profile?.id]);
+
   useEffect(() => {
     if (user) {
       fetchProfile();
