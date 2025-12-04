@@ -271,7 +271,8 @@ export default function Profile() {
                   <Button 
                     type="submit" 
                     disabled={subscribing}
-                    className="h-12 px-5 bg-foreground hover:bg-foreground/90 text-background font-semibold rounded-lg"
+                    className="h-12 px-5 font-semibold rounded-lg"
+                    style={{ backgroundColor: accentColor, color: isDark(accentColor) ? '#fff' : '#1a1a1a' }}
                   >
                     {subscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Subscribe'}
                   </Button>
@@ -305,7 +306,10 @@ export default function Profile() {
 
               {/* Build your page CTA */}
               <Link to="/">
-                <Button className="w-full h-12 bg-[hsl(150,80%,20%)] hover:bg-[hsl(150,80%,25%)] text-white font-semibold rounded-lg gap-2">
+                <Button 
+                  className="w-full h-12 font-semibold rounded-lg gap-2 hover:opacity-90"
+                  style={{ backgroundColor: accentColor, color: isDark(accentColor) ? '#fff' : '#1a1a1a' }}
+                >
                   <Sparkles className="w-4 h-4" />
                   Build your Entrepage
                 </Button>
