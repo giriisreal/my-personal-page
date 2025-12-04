@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { GripVertical, Trash2, Link2, DollarSign, Tag, Play, Maximize2, Check, ImagePlus } from 'lucide-react';
+import { GripVertical, Trash2, Link2, DollarSign, Tag, Play, Maximize2, Check, ImagePlus, Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -17,7 +17,19 @@ interface CustomLink {
   category?: string;
   icon?: string;
   size?: string;
+  color?: string;
 }
+
+const COLOR_OPTIONS = [
+  { value: 'hsl(150, 80%, 35%)', label: 'Green', className: 'bg-[hsl(150,80%,35%)]' },
+  { value: 'hsl(220, 80%, 50%)', label: 'Blue', className: 'bg-[hsl(220,80%,50%)]' },
+  { value: 'hsl(280, 70%, 50%)', label: 'Purple', className: 'bg-[hsl(280,70%,50%)]' },
+  { value: 'hsl(350, 80%, 55%)', label: 'Red', className: 'bg-[hsl(350,80%,55%)]' },
+  { value: 'hsl(30, 90%, 55%)', label: 'Orange', className: 'bg-[hsl(30,90%,55%)]' },
+  { value: 'hsl(180, 70%, 40%)', label: 'Teal', className: 'bg-[hsl(180,70%,40%)]' },
+  { value: 'hsl(45, 90%, 50%)', label: 'Yellow', className: 'bg-[hsl(45,90%,50%)]' },
+  { value: 'hsl(330, 70%, 55%)', label: 'Pink', className: 'bg-[hsl(330,70%,55%)]' },
+];
 
 interface SortableLinkProps {
   link: CustomLink;
@@ -58,6 +70,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [sizeOpen, setSizeOpen] = useState(false);
+  const [colorOpen, setColorOpen] = useState(false);
   const [tempUrl, setTempUrl] = useState(link.url);
   const [tempRevenue, setTempRevenue] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -139,6 +152,12 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
     onUpdate(link.id, 'size', size);
     onSave({ ...link, size });
     setSizeOpen(false);
+  };
+
+  const handleColorChange = (color: string) => {
+    onUpdate(link.id, 'color', color);
+    onSave({ ...link, color });
+    setColorOpen(false);
   };
 
   return (
@@ -343,6 +362,37 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                   {size.label}
                 </button>
               ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        {/* Color */}
+        <Popover open={colorOpen} onOpenChange={setColorOpen}>
+          <PopoverTrigger asChild>
+            <button 
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors border border-border"
+              style={{ backgroundColor: link.color || 'hsl(150, 80%, 35%)' }}
+            >
+              <Palette className="w-4 h-4 text-white" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-2">
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground px-2 py-1">Button color</p>
+              <div className="grid grid-cols-4 gap-2 p-2">
+                {COLOR_OPTIONS.map((color) => (
+                  <button
+                    key={color.value}
+                    onClick={() => handleColorChange(color.value)}
+                    className={cn(
+                      "w-8 h-8 rounded-lg transition-all",
+                      color.className,
+                      link.color === color.value && "ring-2 ring-offset-2 ring-primary"
+                    )}
+                    title={color.label}
+                  />
+                ))}
+              </div>
             </div>
           </PopoverContent>
         </Popover>

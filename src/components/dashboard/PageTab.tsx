@@ -51,6 +51,7 @@ interface CustomLink {
   category?: string;
   icon?: string;
   size?: string;
+  color?: string;
 }
 
 interface PageTabProps {

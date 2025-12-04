@@ -32,6 +32,7 @@ interface CustomLink {
   icon?: string;
   category?: string;
   size?: string;
+  color?: string;
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -163,7 +164,7 @@ export default function Profile() {
           <div className="lg:w-80 lg:flex-shrink-0">
             <div className="lg:sticky lg:top-8">
               {/* Avatar */}
-              <div className="w-40 h-40 rounded-full bg-gradient-to-br from-amber-200 to-orange-300 flex items-center justify-center text-white font-bold text-5xl mx-auto lg:mx-0 mb-6 overflow-hidden shadow-lg border-4 border-white">
+              <div className="w-40 h-40 rounded-full bg-gradient-to-br from-lime-300 to-green-500 flex items-center justify-center text-white font-bold text-5xl mx-auto lg:mx-0 mb-6 overflow-hidden shadow-lg border-4 border-white">
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt={profile.display_name || ''} className="w-full h-full object-cover" />
                 ) : (
@@ -193,11 +194,9 @@ export default function Profile() {
               </div>
 
               {/* Bio */}
-              {profile?.bio && (
-                <p className="text-gray-700 mb-6 leading-relaxed text-center lg:text-left italic">
-                  {profile.bio}
-                </p>
-              )}
+              <p className="text-gray-700 mb-6 leading-relaxed text-center lg:text-left italic">
+                {profile?.bio || 'No bio yet...'}
+              </p>
 
               {/* Email Subscribe */}
               <form onSubmit={handleSubscribe} className="mb-6">
@@ -259,9 +258,10 @@ export default function Profile() {
           <div className="flex-1">
             {customLinks.length > 0 ? (
               <div className="grid md:grid-cols-2 gap-4">
-                {customLinks.map((link) => {
+              {customLinks.map((link) => {
                   const statusInfo = STATUS_LABELS[link.status || 'active'] || STATUS_LABELS.active;
                   const isLarge = link.size === 'large';
+                  const linkColor = link.color || 'hsl(150, 80%, 35%)';
                   
                   return (
                     <a
@@ -269,49 +269,39 @@ export default function Profile() {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`bg-white rounded-2xl p-5 border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all group ${isLarge ? 'md:col-span-2' : ''}`}
+                      className={`rounded-2xl p-5 border border-gray-100 hover:shadow-lg hover:scale-[1.02] transition-all group ${isLarge ? 'md:col-span-2' : ''}`}
+                      style={{ backgroundColor: linkColor }}
                     >
                       {/* Card Header */}
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          {/* Icon */}
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                            {isImageUrl(link.icon) ? (
-                              <img src={link.icon} alt="" className="w-full h-full object-cover rounded-xl" />
-                            ) : (
-                              <span className="text-xl">{link.icon || '🚀'}</span>
-                            )}
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-gray-900 group-hover:text-[hsl(150,80%,20%)] transition-colors">
-                              {link.title || 'Untitled'}
-                            </h3>
-                          </div>
+                      <div className="flex items-start gap-3">
+                        {/* Icon */}
+                        <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0 overflow-hidden">
+                          {isImageUrl(link.icon) ? (
+                            <img src={link.icon} alt="" className="w-full h-full object-cover rounded-xl" />
+                          ) : (
+                            <span className="text-2xl">{link.icon || '🚀'}</span>
+                          )}
                         </div>
-                        
-                        {/* Revenue Badge - placeholder */}
-                        <div className="flex items-center gap-1 bg-green-50 text-green-700 px-2 py-1 rounded-full text-sm font-medium">
-                          <span className="text-green-500">$</span>
-                          <span>--/mo</span>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-white text-lg">
+                            {link.title || 'Untitled'}
+                          </h3>
+                          <p className="text-white/80 text-sm">
+                            {link.url ? link.url.replace(/^https?:\/\//, '').split('/')[0] : 'No description'}
+                          </p>
                         </div>
                       </div>
                       
-                      {/* Description */}
-                      <p className="text-gray-600 text-sm mb-4">
-                        {link.url ? link.url.replace(/^https?:\/\//, '').split('/')[0] : 'No description'}
-                      </p>
-                      
-                      {/* Mini Chart Placeholder */}
-                      <div className="h-20 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg flex items-end justify-center px-4 pb-2">
-                        <div className="flex items-end gap-1 h-full pt-4">
-                          {[40, 55, 45, 60, 50, 70, 65, 80, 75, 90, 85, 95].map((h, i) => (
-                            <div 
-                              key={i} 
-                              className="w-4 bg-gradient-to-t from-amber-400 to-amber-300 rounded-t"
-                              style={{ height: `${h}%` }}
-                            />
-                          ))}
-                        </div>
+                      {/* Status Badge */}
+                      <div className="mt-4 flex items-center gap-2">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
+                          {statusInfo.label}
+                        </span>
+                        {link.category && (
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/20 text-white">
+                            {link.category}
+                          </span>
+                        )}
                       </div>
                     </a>
                   );
