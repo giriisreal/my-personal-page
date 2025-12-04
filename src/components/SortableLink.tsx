@@ -33,7 +33,7 @@ const COLOR_OPTIONS = [
   { value: 'hsl(220, 80%, 50%)', label: 'Blue' },
   { value: 'hsl(280, 70%, 50%)', label: 'Purple' },
   { value: 'hsl(350, 80%, 55%)', label: 'Red' },
-  { value: 'hsl(0, 0%, 50%)', label: 'Grey' },
+  { value: 'hsl(0, 0%, 93%)', label: 'Grey' },
   { value: 'hsl(180, 70%, 40%)', label: 'Teal' },
   { value: 'hsl(45, 90%, 50%)', label: 'Yellow' },
   { value: 'hsl(330, 70%, 55%)', label: 'Pink' },
