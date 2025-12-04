@@ -150,7 +150,7 @@ export function PageTab({
           <PopoverTrigger asChild>
             <button className={cn(
               "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
-              profile.location ? "bg-pink-500 text-white" : "bg-secondary text-muted-foreground hover:text-foreground"
+              profile.location ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
             )}>
               <MapPin className="w-5 h-5" />
             </button>
@@ -172,7 +172,7 @@ export function PageTab({
           <PopoverTrigger asChild>
             <button className={cn(
               "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
-              profile.revenue ? "bg-pink-500 text-white" : "bg-secondary text-muted-foreground hover:text-foreground"
+              profile.revenue ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
             )}>
               <DollarSign className="w-5 h-5" />
             </button>
@@ -214,7 +214,7 @@ export function PageTab({
       {/* Add Startup Button */}
       <Button 
         onClick={onAddLink}
-        className="w-full h-14 bg-pink-500 hover:bg-pink-600 text-white font-semibold text-base"
+        className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base"
       >
         <Plus className="w-5 h-5 mr-2" />
         ADD STARTUP
@@ -257,7 +257,7 @@ export function PageTab({
                 className={cn(
                   "w-12 h-12 rounded-xl flex items-center justify-center transition-all",
                   isActive 
-                    ? "bg-pink-500 text-white" 
+                    ? "bg-primary text-primary-foreground" 
                     : hasValue
                     ? "bg-secondary text-foreground"
                     : "bg-secondary text-muted-foreground hover:text-foreground"

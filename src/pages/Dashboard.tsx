@@ -56,9 +56,16 @@ export default function Dashboard() {
   const [pageViews, setPageViews] = useState<PageView[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState('light');
+  const [selectedFont, setSelectedFont] = useState('dm-sans');
   const { toast } = useToast();
   const navigate = useNavigate();
   const claimedUsername = searchParams.get('username');
+
+  const handleStyleChange = (font: string, theme: string) => {
+    setSelectedFont(font);
+    setSelectedTheme(theme);
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -274,7 +281,7 @@ export default function Dashboard() {
             >
               Log out
             </Button>
-            <Button className="bg-pink-500 hover:bg-pink-600 text-white font-semibold gap-2">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-2">
               <Sparkles className="w-4 h-4" />
               DEPLOY
             </Button>
@@ -301,7 +308,7 @@ export default function Dashboard() {
             />
           )}
 
-          {activeTab === 'style' && <StyleTab profileId={profile.id} />}
+          {activeTab === 'style' && <StyleTab profileId={profile.id} onStyleChange={handleStyleChange} />}
 
           {activeTab === 'stats' && <StatsTab pageViews={pageViews} profileId={profile.id} />}
 
@@ -316,7 +323,7 @@ export default function Dashboard() {
         {/* Right Panel - Phone Preview */}
         {(activeTab === 'page' || activeTab === 'style') && (
           <div className="hidden lg:flex flex-shrink-0 w-[400px] items-start justify-center pt-8 sticky top-24 h-fit">
-            <PhonePreview profile={profile} customLinks={customLinks} />
+            <PhonePreview profile={profile} customLinks={customLinks} theme={selectedTheme} font={selectedFont} />
           </div>
         )}
       </div>

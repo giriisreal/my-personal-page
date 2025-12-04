@@ -106,7 +106,7 @@ export function StatsTab({ pageViews, profileId }: StatsTabProps) {
           </div>
           <div className="text-4xl font-bold">{subscriberCount}</div>
           <div className="mt-auto pt-8">
-            <div className="h-1 bg-pink-500 rounded-full" style={{ width: `${Math.min(subscriberCount * 10, 100)}%` }} />
+            <div className="h-1 bg-primary rounded-full" style={{ width: `${Math.min(subscriberCount * 10, 100)}%` }} />
           </div>
         </div>
 
