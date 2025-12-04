@@ -41,6 +41,8 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   'discontinued': { label: 'Discontinued', color: 'bg-red-100 text-red-700' },
 };
 
+const isImageUrl = (icon?: string) => icon?.startsWith('http') || icon?.startsWith('data:');
+
 export default function Profile() {
   const { username } = useParams<{ username: string }>();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -231,7 +233,11 @@ export default function Profile() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-left"
                   >
-                    <span className="text-xl">{link.icon || '🚀'}</span>
+                    {isImageUrl(link.icon) ? (
+                      <img src={link.icon} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                    ) : (
+                      <span className="text-xl">{link.icon || '🚀'}</span>
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-gray-900 truncate">{link.title}</p>
                       <p className="text-sm text-gray-500 truncate">
