@@ -4,10 +4,25 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { AvatarUpload } from '@/components/AvatarUpload';
-import { BentoEditor } from '@/components/dashboard/BentoEditor';
+import { SortableLink } from '@/components/SortableLink';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { 
   MapPin, DollarSign, Mail, Twitter, Github, Instagram, 
-  Linkedin, Youtube 
+  Linkedin, Youtube, Plus 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -78,12 +93,27 @@ export function PageTab({
   const [revenueOpen, setRevenueOpen] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = customLinks.findIndex((link) => link.id === active.id);
+    const newIndex = customLinks.findIndex((link) => link.id === over.id);
+    const newLinks = arrayMove(customLinks, oldIndex, newIndex);
+    onLinksChange(newLinks);
+  };
+
   const activeSocialData = socialIcons.find(s => s.id === activeSocial);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Profile Info */}
-      <div className="flex items-start gap-6 p-4 bg-secondary/30 rounded-xl">
+      <div className="flex items-start gap-6">
         <AvatarUpload
           userId={userId}
           currentAvatarUrl={profile.avatar_url}
@@ -102,32 +132,37 @@ export function PageTab({
             value={profile.bio || ''}
             onChange={(e) => onProfileChange({ ...profile, bio: e.target.value })}
             placeholder="Just a young nerd who cannot fix his mind between finance and tech"
-            className="min-h-[60px] resize-none bg-background/50 border border-border/50 rounded-lg p-2 focus:border-primary focus-visible:ring-0 text-muted-foreground text-sm"
-            rows={2}
+            className="min-h-[80px] resize-none border-2 border-primary/30 rounded-xl p-3 focus:border-primary focus-visible:ring-0 text-muted-foreground"
+            rows={3}
           />
         </div>
       </div>
 
-      {/* Quick Actions Row */}
-      <div className="flex items-center gap-3">
+      {/* Quick Action Buttons */}
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <a href="#" className="text-sm hover:text-foreground transition-colors">Markdown guide</a>
+        <span className="text-xs">↗</span>
+      </div>
+
+      {/* Location, Revenue, Contact icons */}
+      <div className="flex items-center gap-3 border-t border-border/50 pt-6">
         {/* Location */}
         <Popover open={locationOpen} onOpenChange={setLocationOpen}>
           <PopoverTrigger asChild>
             <button className={cn(
-              "w-9 h-9 rounded-lg flex items-center justify-center transition-colors text-sm",
+              "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
               profile.location ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
             )}>
-              <MapPin className="w-4 h-4" />
+              <MapPin className="w-5 h-5" />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3">
-            <div className="space-y-2">
-              <label className="text-xs font-medium">Location</label>
+          <PopoverContent className="w-64 p-3">
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Location</label>
               <Input
                 value={profile.location || ''}
                 onChange={(e) => onProfileChange({ ...profile, location: e.target.value })}
                 placeholder="San Francisco, CA"
-                className="h-8 text-sm"
               />
             </div>
           </PopoverContent>
@@ -137,84 +172,130 @@ export function PageTab({
         <Popover open={revenueOpen} onOpenChange={setRevenueOpen}>
           <PopoverTrigger asChild>
             <button className={cn(
-              "w-9 h-9 rounded-lg flex items-center justify-center transition-colors text-sm",
+              "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
               profile.revenue ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
             )}>
-              <DollarSign className="w-4 h-4" />
+              <DollarSign className="w-5 h-5" />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-56 p-3">
-            <div className="space-y-2">
-              <label className="text-xs font-medium">Monthly Revenue</label>
+          <PopoverContent className="w-64 p-3">
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Monthly Revenue</label>
               <Input
                 value={profile.revenue || ''}
                 onChange={(e) => onProfileChange({ ...profile, revenue: e.target.value })}
                 placeholder="$5k/mo"
-                className="h-8 text-sm"
               />
             </div>
           </PopoverContent>
         </Popover>
 
-        {/* Social Links */}
-        {socialIcons.slice(0, 4).map((social) => {
-          const hasValue = profile[social.field];
-          return (
-            <button
-              key={social.id}
-              onClick={() => setActiveSocial(activeSocial === social.id ? null : social.id)}
-              className={cn(
-                "w-9 h-9 rounded-lg flex items-center justify-center transition-all",
-                activeSocial === social.id 
-                  ? "bg-primary text-primary-foreground" 
-                  : hasValue
-                  ? "bg-secondary text-foreground"
-                  : "bg-secondary text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <social.icon className="w-4 h-4" />
+        {/* Contact Email */}
+        <Popover open={emailOpen} onOpenChange={setEmailOpen}>
+          <PopoverTrigger asChild>
+            <button className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+              <Mail className="w-5 h-5" />
             </button>
-          );
-        })}
+          </PopoverTrigger>
+          <PopoverContent className="w-64 p-3">
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Contact Email</label>
+              <Input
+                type="email"
+                placeholder="you@email.com"
+              />
+              <p className="text-xs text-muted-foreground">
+                Enable email subscriptions for your profile visitors
+              </p>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
-      {/* Active Social Input */}
-      {activeSocial && activeSocialData && (
-        <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
-          <Input
-            value={profile[activeSocialData.field] || ''}
-            onChange={(e) => onProfileChange({ 
-              ...profile, 
-              [activeSocialData.field]: e.target.value 
-            })}
-            placeholder={activeSocialData.placeholder}
-            className="flex-1 h-8 text-sm"
-          />
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => {
-              onProfileChange({ ...profile, [activeSocialData.field]: null });
-              setActiveSocial(null);
-            }}
-            className="text-muted-foreground hover:text-destructive h-8 px-2"
-          >
-            Clear
-          </Button>
-        </div>
-      )}
+      {/* Add Startup Button */}
+      <Button 
+        onClick={onAddLink}
+        className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base"
+      >
+        <Plus className="w-5 h-5 mr-2" />
+        ADD STARTUP
+      </Button>
 
-      {/* Bento Editor */}
-      <div className="min-h-[500px]">
-        <BentoEditor
-          profile={profile}
-          customLinks={customLinks}
-          onLinksChange={onLinksChange}
-          onAddLink={onAddLink}
-          onUpdateLink={onUpdateLink}
-          onSaveLink={onSaveLink}
-          onDeleteLink={onDeleteLink}
-        />
+      {/* Custom Links */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={customLinks.map(link => link.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="space-y-4">
+            {customLinks.map((link) => (
+              <SortableLink
+                key={link.id}
+                link={link}
+                onUpdate={onUpdateLink}
+                onSave={onSaveLink}
+                onDelete={onDeleteLink}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      {/* Social Links */}
+      <div className="border-t border-border/50 pt-6 space-y-4">
+        <div className="flex items-center gap-2">
+          {socialIcons.map((social) => {
+            const isActive = activeSocial === social.id;
+            const hasValue = profile[social.field];
+            return (
+              <button
+                key={social.id}
+                onClick={() => setActiveSocial(isActive ? null : social.id)}
+                className={cn(
+                  "w-12 h-12 rounded-xl flex items-center justify-center transition-all",
+                  isActive 
+                    ? "bg-primary text-primary-foreground" 
+                    : hasValue
+                    ? "bg-secondary text-foreground"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <social.icon className="w-5 h-5" />
+              </button>
+            );
+          })}
+        </div>
+
+        {activeSocial && activeSocialData && (
+          <div className="space-y-2">
+            <label className="text-sm text-muted-foreground capitalize">
+              {activeSocial}
+            </label>
+            <div className="flex items-center gap-3">
+              <Input
+                value={profile[activeSocialData.field] || ''}
+                onChange={(e) => onProfileChange({ 
+                  ...profile, 
+                  [activeSocialData.field]: e.target.value 
+                })}
+                placeholder={activeSocialData.placeholder}
+                className="flex-1"
+              />
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => onProfileChange({ ...profile, [activeSocialData.field]: null })}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                🗑️
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
