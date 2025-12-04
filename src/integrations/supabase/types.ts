@@ -21,10 +21,15 @@ export type Database = {
           created_at: string
           icon: string | null
           id: string
+          lemonsqueezy_api_key: string | null
+          lemonsqueezy_store_id: string | null
+          live_revenue: number | null
           position: number | null
           profile_id: string
+          revenue_updated_at: string | null
           size: string | null
           status: string | null
+          stripe_api_key: string | null
           title: string
           url: string
         }
@@ -34,10 +39,15 @@ export type Database = {
           created_at?: string
           icon?: string | null
           id?: string
+          lemonsqueezy_api_key?: string | null
+          lemonsqueezy_store_id?: string | null
+          live_revenue?: number | null
           position?: number | null
           profile_id: string
+          revenue_updated_at?: string | null
           size?: string | null
           status?: string | null
+          stripe_api_key?: string | null
           title: string
           url: string
         }
@@ -47,10 +57,15 @@ export type Database = {
           created_at?: string
           icon?: string | null
           id?: string
+          lemonsqueezy_api_key?: string | null
+          lemonsqueezy_store_id?: string | null
+          live_revenue?: number | null
           position?: number | null
           profile_id?: string
+          revenue_updated_at?: string | null
           size?: string | null
           status?: string | null
+          stripe_api_key?: string | null
           title?: string
           url?: string
         }

@@ -1,1 +1,4 @@
 project_id = "zuabbqbdrvhlsbtpsnew"
+
+[functions.fetch-revenue]
+verify_jwt = false
