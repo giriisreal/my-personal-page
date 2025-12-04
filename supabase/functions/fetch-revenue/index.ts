@@ -8,9 +8,10 @@ const corsHeaders = {
 
 interface FetchRevenueRequest {
   linkId: string;
-  provider: "stripe" | "lemonsqueezy";
+  provider: "stripe" | "lemonsqueezy" | "razorpay";
   apiKey: string;
   storeId?: string; // Only for LemonSqueezy
+  keyId?: string; // Only for Razorpay
 }
 
 async function fetchStripeRevenue(apiKey: string): Promise<number> {
@@ -66,13 +67,49 @@ async function fetchLemonSqueezyRevenue(apiKey: string, storeId: string): Promis
   return totalRevenue;
 }
 
+async function fetchRazorpayRevenue(keyId: string, apiKey: string): Promise<number> {
+  console.log("Fetching Razorpay revenue...");
+  
+  // Razorpay uses Basic Auth with key_id:key_secret
+  const authHeader = btoa(`${keyId}:${apiKey}`);
+  
+  // Fetch all payments from Razorpay
+  const response = await fetch("https://api.razorpay.com/v1/payments?count=100", {
+    headers: {
+      Authorization: `Basic ${authHeader}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error("Razorpay API error:", error);
+    throw new Error("Invalid Razorpay API credentials");
+  }
+
+  const data = await response.json();
+  
+  // Sum up all captured payments (in paise, convert to rupees then to USD approximate)
+  const capturedPayments = data.items?.filter((p: any) => p.status === 'captured') || [];
+  const totalInPaise = capturedPayments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
+  
+  // Convert paise to INR (divide by 100)
+  const totalInINR = totalInPaise / 100;
+  
+  // Approximate conversion to USD (you may want to use a real exchange rate API)
+  const totalRevenue = totalInINR / 83; // Approximate INR to USD
+  
+  console.log("Razorpay revenue fetched:", totalRevenue);
+  
+  return Math.round(totalRevenue * 100) / 100; // Round to 2 decimal places
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { linkId, provider, apiKey, storeId }: FetchRevenueRequest = await req.json();
+    const { linkId, provider, apiKey, storeId, keyId }: FetchRevenueRequest = await req.json();
 
     console.log("Fetch revenue request:", { linkId, provider, hasApiKey: !!apiKey });
 
@@ -95,6 +132,14 @@ const handler = async (req: Request): Promise<Response> => {
         );
       }
       revenue = await fetchLemonSqueezyRevenue(apiKey, storeId);
+    } else if (provider === "razorpay") {
+      if (!keyId) {
+        return new Response(
+          JSON.stringify({ error: "Key ID required for Razorpay" }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+      revenue = await fetchRazorpayRevenue(keyId, apiKey);
     } else {
       return new Response(
         JSON.stringify({ error: "Invalid provider" }),
@@ -118,10 +163,20 @@ const handler = async (req: Request): Promise<Response> => {
       updateData.stripe_api_key = apiKey;
       updateData.lemonsqueezy_api_key = null;
       updateData.lemonsqueezy_store_id = null;
-    } else {
+      updateData.razorpay_api_key = null;
+      updateData.razorpay_key_id = null;
+    } else if (provider === "lemonsqueezy") {
       updateData.lemonsqueezy_api_key = apiKey;
       updateData.lemonsqueezy_store_id = storeId;
       updateData.stripe_api_key = null;
+      updateData.razorpay_api_key = null;
+      updateData.razorpay_key_id = null;
+    } else if (provider === "razorpay") {
+      updateData.razorpay_api_key = apiKey;
+      updateData.razorpay_key_id = keyId;
+      updateData.stripe_api_key = null;
+      updateData.lemonsqueezy_api_key = null;
+      updateData.lemonsqueezy_store_id = null;
     }
 
     const { error: updateError } = await supabaseClient

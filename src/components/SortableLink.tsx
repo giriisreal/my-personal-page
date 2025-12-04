@@ -96,10 +96,12 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Revenue connection states
-  const [revenueTab, setRevenueTab] = useState<'stripe' | 'lemonsqueezy'>('stripe');
+  const [revenueTab, setRevenueTab] = useState<'stripe' | 'lemonsqueezy' | 'razorpay'>('stripe');
   const [stripeApiKey, setStripeApiKey] = useState('');
   const [lemonSqueezyApiKey, setLemonSqueezyApiKey] = useState('');
   const [lemonSqueezyStoreId, setLemonSqueezyStoreId] = useState('');
+  const [razorpayKeyId, setRazorpayKeyId] = useState('');
+  const [razorpayApiKey, setRazorpayApiKey] = useState('');
 
   const isImageUrl = (icon?: string) => icon?.startsWith('http') || icon?.startsWith('data:');
 
@@ -138,7 +140,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
     }
   };
 
-  const fetchRevenue = async (provider: 'stripe' | 'lemonsqueezy') => {
+  const fetchRevenue = async (provider: 'stripe' | 'lemonsqueezy' | 'razorpay') => {
     setFetchingRevenue(true);
     try {
       const body: Record<string, string> = {
@@ -149,16 +151,26 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
       if (provider === 'stripe') {
         if (!stripeApiKey) {
           toast.error('Please enter your Stripe API key');
+          setFetchingRevenue(false);
           return;
         }
         body.apiKey = stripeApiKey;
-      } else {
+      } else if (provider === 'lemonsqueezy') {
         if (!lemonSqueezyApiKey || !lemonSqueezyStoreId) {
           toast.error('Please enter both API key and Store ID');
+          setFetchingRevenue(false);
           return;
         }
         body.apiKey = lemonSqueezyApiKey;
         body.storeId = lemonSqueezyStoreId;
+      } else if (provider === 'razorpay') {
+        if (!razorpayKeyId || !razorpayApiKey) {
+          toast.error('Please enter both Key ID and API Key');
+          setFetchingRevenue(false);
+          return;
+        }
+        body.apiKey = razorpayApiKey;
+        body.keyId = razorpayKeyId;
       }
 
       const { data, error } = await supabase.functions.invoke('fetch-revenue', {
@@ -175,6 +187,8 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
         setStripeApiKey('');
         setLemonSqueezyApiKey('');
         setLemonSqueezyStoreId('');
+        setRazorpayKeyId('');
+        setRazorpayApiKey('');
       } else {
         toast.error(data.error || 'Failed to fetch revenue');
       }
@@ -364,32 +378,43 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
             )}
 
             {/* Tab buttons */}
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-2 mb-4 flex-wrap">
               <button
                 onClick={() => setRevenueTab('stripe')}
                 className={cn(
-                  "flex-1 py-3 px-4 rounded-lg font-medium text-sm transition-colors",
+                  "flex-1 min-w-[100px] py-3 px-3 rounded-lg font-medium text-sm transition-colors",
                   revenueTab === 'stripe'
                     ? "bg-[hsl(260,80%,60%)] text-white"
                     : "bg-secondary text-foreground hover:bg-secondary/80"
                 )}
               >
-                Connect with <span className="font-bold">stripe</span>
+                <span className="font-bold">Stripe</span>
               </button>
               <button
                 onClick={() => setRevenueTab('lemonsqueezy')}
                 className={cn(
-                  "flex-1 py-3 px-4 rounded-lg font-medium text-sm transition-colors",
+                  "flex-1 min-w-[100px] py-3 px-3 rounded-lg font-medium text-sm transition-colors",
                   revenueTab === 'lemonsqueezy'
                     ? "bg-[hsl(45,90%,50%)] text-foreground"
                     : "bg-secondary text-foreground hover:bg-secondary/80"
                 )}
               >
-                Connect with 🍋 <span className="font-bold">lemon squeezy</span>
+                🍋 <span className="font-bold">Lemon</span>
+              </button>
+              <button
+                onClick={() => setRevenueTab('razorpay')}
+                className={cn(
+                  "flex-1 min-w-[100px] py-3 px-3 rounded-lg font-medium text-sm transition-colors",
+                  revenueTab === 'razorpay'
+                    ? "bg-[hsl(210,100%,50%)] text-white"
+                    : "bg-secondary text-foreground hover:bg-secondary/80"
+                )}
+              >
+                <span className="font-bold">Razorpay</span>
               </button>
             </div>
 
-            {revenueTab === 'stripe' ? (
+            {revenueTab === 'stripe' && (
               <div className="space-y-4">
                 <div className="text-sm text-muted-foreground space-y-2">
                   <p>1. <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener noreferrer" className="text-primary underline">Generate a Stripe Restricted API key</a> with read-only access.</p>
@@ -416,7 +441,9 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                   FETCH STRIPE REVENUE
                 </button>
               </div>
-            ) : (
+            )}
+
+            {revenueTab === 'lemonsqueezy' && (
               <div className="space-y-4">
                 <div className="text-sm text-muted-foreground space-y-2">
                   <p>1. <a href="https://app.lemonsqueezy.com/settings/api" target="_blank" rel="noopener noreferrer" className="text-primary underline">Generate a new API key</a></p>
@@ -456,6 +483,52 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                   )}
                   FETCH LEMONSQUEEZY REVENUE
                 </button>
+              </div>
+            )}
+
+            {revenueTab === 'razorpay' && (
+              <div className="space-y-4">
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p>1. <a href="https://dashboard.razorpay.com/app/keys" target="_blank" rel="noopener noreferrer" className="text-primary underline">Generate API keys from Razorpay Dashboard</a></p>
+                  <p>2. Copy the Key ID and Key Secret</p>
+                  <p>3. Paste them below</p>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Key ID</label>
+                    <Input
+                      value={razorpayKeyId}
+                      onChange={(e) => setRazorpayKeyId(e.target.value)}
+                      placeholder="rzp_live_..."
+                      className="font-mono text-sm placeholder:text-muted-foreground/50 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Key Secret</label>
+                    <Input
+                      value={razorpayApiKey}
+                      onChange={(e) => setRazorpayApiKey(e.target.value)}
+                      placeholder="Enter your Key Secret"
+                      type="password"
+                      className="placeholder:text-muted-foreground/50 bg-white"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => fetchRevenue('razorpay')}
+                  disabled={fetchingRevenue || !razorpayKeyId || !razorpayApiKey}
+                  className="w-full h-11 bg-[hsl(210,100%,50%)] hover:bg-[hsl(210,100%,45%)] text-white font-semibold rounded-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {fetchingRevenue ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <RefreshCw className="w-4 h-4" />
+                  )}
+                  FETCH RAZORPAY REVENUE
+                </button>
+                <p className="text-xs text-muted-foreground text-center">
+                  Revenue is converted from INR to USD (approximate)
+                </p>
               </div>
             )}
           </DialogContent>

@@ -26,6 +26,8 @@ export type Database = {
           live_revenue: number | null
           position: number | null
           profile_id: string
+          razorpay_api_key: string | null
+          razorpay_key_id: string | null
           revenue_updated_at: string | null
           size: string | null
           status: string | null
@@ -45,6 +47,8 @@ export type Database = {
           live_revenue?: number | null
           position?: number | null
           profile_id: string
+          razorpay_api_key?: string | null
+          razorpay_key_id?: string | null
           revenue_updated_at?: string | null
           size?: string | null
           status?: string | null
@@ -64,6 +68,8 @@ export type Database = {
           live_revenue?: number | null
           position?: number | null
           profile_id?: string
+          razorpay_api_key?: string | null
+          razorpay_key_id?: string | null
           revenue_updated_at?: string | null
           size?: string | null
           status?: string | null
