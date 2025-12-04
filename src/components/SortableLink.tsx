@@ -160,7 +160,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
         {/* Link Icon with upload */}
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center flex-shrink-0 overflow-hidden hover:opacity-80 transition-opacity relative group"
+          className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center flex-shrink-0 overflow-hidden hover:opacity-80 transition-opacity relative group"
           disabled={uploading}
         >
           {isImageUrl(link.icon) ? (
@@ -204,7 +204,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
         <Switch 
           checked={enabled} 
           onCheckedChange={setEnabled}
-          className="data-[state=checked]:bg-pink-500"
+          className="data-[state=checked]:bg-primary"
         />
       </div>
 
@@ -227,7 +227,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
               />
               <button
                 onClick={handleSaveUrl}
-                className="w-full h-9 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-lg"
+                className="w-full h-9 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium rounded-lg"
               >
                 Save
               </button>
@@ -252,7 +252,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
               />
               <button
                 onClick={() => setRevenueOpen(false)}
-                className="w-full h-9 bg-pink-500 hover:bg-pink-600 text-white text-sm font-medium rounded-lg"
+                className="w-full h-9 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium rounded-lg"
               >
                 Save
               </button>
@@ -277,7 +277,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                   className={cn(
                     "w-full flex items-center gap-2 px-2 py-2 rounded-lg text-sm transition-colors",
                     link.category === cat.value
-                      ? "bg-pink-500 text-white"
+                      ? "bg-primary text-primary-foreground"
                       : "hover:bg-secondary"
                   )}
                 >
@@ -292,7 +292,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
         {/* Status */}
         <Popover open={statusOpen} onOpenChange={setStatusOpen}>
           <PopoverTrigger asChild>
-            <button className="w-8 h-8 rounded-lg bg-pink-500 flex items-center justify-center text-white transition-colors">
+            <button className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground transition-colors">
               <Play className="w-4 h-4 fill-current" />
             </button>
           </PopoverTrigger>
@@ -306,7 +306,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                   className={cn(
                     "w-full flex items-center gap-2 px-2 py-2 rounded-lg text-sm transition-colors",
                     link.status === status.value
-                      ? "bg-pink-500 text-white"
+                      ? "bg-primary text-primary-foreground"
                       : "hover:bg-secondary"
                   )}
                 >
@@ -335,7 +335,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                   className={cn(
                     "w-full flex items-center gap-2 px-2 py-2 rounded-lg text-sm transition-colors",
                     link.size === size.value
-                      ? "bg-pink-500 text-white"
+                      ? "bg-primary text-primary-foreground"
                       : "hover:bg-secondary"
                   )}
                 >

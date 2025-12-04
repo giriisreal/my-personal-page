@@ -158,7 +158,7 @@ export default function Profile() {
     <div className="min-h-screen bg-white">
       {/* Share button */}
       <div className="fixed top-4 right-4 z-10">
-        <button className="w-10 h-10 rounded-xl bg-pink-500 flex items-center justify-center text-white shadow-lg hover:bg-pink-600 transition-colors">
+        <button className="w-10 h-10 rounded-xl bg-teal-500 flex items-center justify-center text-white shadow-lg hover:bg-teal-600 transition-colors">
           <Share2 className="w-5 h-5" />
         </button>
       </div>
@@ -166,7 +166,7 @@ export default function Profile() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md text-center animate-fade-in">
           {/* Avatar */}
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-300 to-pink-400 flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4 overflow-hidden shadow-xl ring-4 ring-white">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4 overflow-hidden shadow-xl ring-4 ring-white">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt={profile.display_name || ''} className="w-full h-full object-cover" />
             ) : (
@@ -211,7 +211,7 @@ export default function Profile() {
             <Button 
               type="submit" 
               disabled={subscribing}
-              className="h-11 px-6 bg-pink-500 hover:bg-pink-600 text-white font-semibold"
+              className="h-11 px-6 bg-teal-500 hover:bg-teal-600 text-white font-semibold"
             >
               {subscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Subscribe'}
             </Button>

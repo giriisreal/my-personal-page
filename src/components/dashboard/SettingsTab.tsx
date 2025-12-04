@@ -141,7 +141,7 @@ export function SettingsTab({ profile, onUsernameUpdate }: SettingsTabProps) {
                 onChange={(e) => setCustomDomain(e.target.value)}
               />
               <Button 
-                className="bg-pink-500 hover:bg-pink-600 text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 onClick={() => toast({ title: 'Coming soon', description: 'Custom domains will be available soon!' })}
               >
                 SAVE
@@ -161,7 +161,7 @@ export function SettingsTab({ profile, onUsernameUpdate }: SettingsTabProps) {
                 <p className="text-sm text-muted-foreground">Basic features included</p>
               </div>
               <Button 
-                className="bg-pink-500 hover:bg-pink-600 text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 onClick={() => toast({ title: 'Coming soon', description: 'Pro plans will be available soon!' })}
               >
                 Upgrade to Pro
