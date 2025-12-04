@@ -301,9 +301,9 @@ export default function Dashboard() {
             />
           )}
 
-          {activeTab === 'style' && <StyleTab />}
+          {activeTab === 'style' && <StyleTab profileId={profile.id} />}
 
-          {activeTab === 'stats' && <StatsTab pageViews={pageViews} />}
+          {activeTab === 'stats' && <StatsTab pageViews={pageViews} profileId={profile.id} />}
 
           {activeTab === 'settings' && (
             <SettingsTab 
