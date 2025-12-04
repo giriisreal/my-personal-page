@@ -55,7 +55,7 @@ export function UsernameEditor({ currentUsername, profileId, onUpdate }: Usernam
     if (error) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } else {
-      toast({ title: 'Username updated!', description: `Your new URL is mypage.io/${username}` });
+      toast({ title: 'Username updated!', description: `Your new URL is entrepage.space/${username}` });
       onUpdate(username);
       setIsEditing(false);
     }
@@ -73,7 +73,7 @@ export function UsernameEditor({ currentUsername, profileId, onUpdate }: Usernam
       <div className="flex items-center gap-2">
         <div className="flex-1">
           <Input value={currentUsername} disabled className="bg-secondary/50" />
-          <p className="text-xs text-muted-foreground mt-1">mypage.io/{currentUsername}</p>
+          <p className="text-xs text-muted-foreground mt-1">entrepage.space/{currentUsername}</p>
         </div>
         <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)}>
           <Pencil className="w-4 h-4" />
@@ -105,7 +105,7 @@ export function UsernameEditor({ currentUsername, profileId, onUpdate }: Usernam
           )}
         </div>
       </div>
-      <p className="text-xs text-muted-foreground">mypage.io/{username}</p>
+      <p className="text-xs text-muted-foreground">entrepage.space/{username}</p>
       <div className="flex items-center gap-2">
         <Button 
           size="sm" 

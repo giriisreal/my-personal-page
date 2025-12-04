@@ -65,7 +65,7 @@ export default function Auth() {
     } else if (isSignUp) {
       toast({
         title: 'Account created!',
-        description: 'Welcome to MyPage.',
+        description: 'Welcome to Entrepage.',
       });
     }
   };
@@ -83,7 +83,7 @@ export default function Auth() {
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold text-card-foreground">MyPage</h1>
+            <h1 className="text-2xl font-bold text-card-foreground">Entrepage</h1>
           </div>
           
           <h2 className="text-xl font-semibold mb-2 text-card-foreground">
@@ -92,7 +92,7 @@ export default function Auth() {
           <p className="text-muted-foreground mb-6">
             {isSignUp 
               ? claimedUsername 
-                ? `Claim your page: mypage/${claimedUsername}` 
+                ? `Claim your page: Entrepage/${claimedUsername}` 
                 : 'Start building your personal page'
               : 'Sign in to manage your page'}
           </p>

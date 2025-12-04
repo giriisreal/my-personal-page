@@ -137,17 +137,14 @@ export function PageTab({
             value={profile.bio || ''}
             onChange={(e) => onProfileChange({ ...profile, bio: e.target.value })}
             placeholder="Just a young nerd who cannot fix his mind between finance and tech"
-            className="min-h-[80px] resize-none border-2 border-primary/30 rounded-xl p-3 focus:border-primary focus-visible:ring-0 text-muted-foreground"
+            className="min-h-[80px] resize-none border-2 border-primary/30 rounded-xl p-3 focus:border-primary focus-visible:ring-0 text-muted-foreground bg-white"
             rows={3}
           />
         </div>
       </div>
 
       {/* Quick Action Buttons */}
-      <div className="flex items-center gap-2 text-muted-foreground">
-        <a href="#" className="text-sm hover:text-foreground transition-colors">Markdown guide</a>
-        <span className="text-xs">↗</span>
-      </div>
+     
 
       {/* Location, Revenue, Contact icons */}
       <div className="flex items-center gap-3 border-t border-border/50 pt-6">

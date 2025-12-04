@@ -136,7 +136,7 @@ export function SettingsTab({ profile, onUsernameUpdate }: SettingsTabProps) {
             <div className="flex items-center gap-3">
               <Input
                 placeholder="yourdomain.com"
-                className="flex-1"
+                className="flex-1 bg-white"
                 value={customDomain}
                 onChange={(e) => setCustomDomain(e.target.value)}
               />

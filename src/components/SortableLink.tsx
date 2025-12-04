@@ -387,7 +387,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                   onChange={(e) => setStripeApiKey(e.target.value)}
                   placeholder="rk_live_..."
                   type="password"
-                  className="font-mono text-sm placeholder:text-muted-foreground/50"
+                  className="font-mono text-sm placeholder:text-muted-foreground/50 bg-white"
                 />
                 <button
                   onClick={() => fetchRevenue('stripe')}
@@ -417,7 +417,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                       onChange={(e) => setLemonSqueezyApiKey(e.target.value)}
                       placeholder="Enter your API Key"
                       type="password"
-                      className="placeholder:text-muted-foreground/50"
+                      className="placeholder:text-muted-foreground/50 bg-white"
                     />
                   </div>
                   <div>
@@ -426,7 +426,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                       value={lemonSqueezyStoreId}
                       onChange={(e) => setLemonSqueezyStoreId(e.target.value)}
                       placeholder="Enter your Store ID"
-                      className="placeholder:text-muted-foreground/50"
+                      className="placeholder:text-muted-foreground/50 bg-white"
                     />
                   </div>
                 </div>

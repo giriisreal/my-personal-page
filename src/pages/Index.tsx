@@ -31,7 +31,7 @@ export default function Index() {
         <div className="container mx-auto px-6 py-4">
           <div className="bg-card rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
             <Link to="/" className="text-2xl font-bold text-foreground tracking-tight">
-              MyPage
+              Entrepage
             </Link>
             
             <div className="hidden md:flex items-center gap-8">
@@ -60,24 +60,24 @@ export default function Index() {
         <div className="container mx-auto max-w-6xl">
           <div className="max-w-2xl">
             <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-foreground leading-[0.95] mb-8 tracking-tight" style={{ fontStyle: 'italic' }}>
-              A link in bio built for you.
+              Fill your page with startups.
             </h1>
             
             <p className="text-xl md:text-2xl text-foreground/80 mb-10 leading-relaxed max-w-xl">
-              Join thousands of creators sharing their work. One link to help you share everything you create, curate and sell from your social media profiles.
+              Join thousands of creators sharing their startups. One link to help you share everything you create, curate and sell from your social media profiles.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 max-w-lg">
               <div className="flex-1 relative">
                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
-                  mypage/
+                 entrepage/
                 </span>
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
                   onKeyDown={(e) => e.key === 'Enter' && handleGetStarted()}
-                  placeholder="yourname"
+                  placeholder="                         "
                   className="w-full h-14 pl-20 pr-4 rounded-full bg-card border-0 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-lg"
                 />
               </div>
@@ -102,8 +102,8 @@ export default function Index() {
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-primary-foreground/10 rounded-3xl p-8">
-              <div className="w-14 h-14 rounded-2xl bg-background flex items-center justify-center mb-6">
-                <span className="text-2xl">👤</span>
+              <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-6">
+                <span className="text-2xl ">👤</span>
               </div>
               <h3 className="text-2xl font-bold mb-3">Personal Bio Page</h3>
               <p className="text-primary-foreground/80 text-lg">
@@ -112,7 +112,7 @@ export default function Index() {
             </div>
             
             <div className="bg-primary-foreground/10 rounded-3xl p-8">
-              <div className="w-14 h-14 rounded-2xl bg-background flex items-center justify-center mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-6">
                 <span className="text-2xl">🔗</span>
               </div>
               <h3 className="text-2xl font-bold mb-3">Custom Links</h3>
@@ -122,7 +122,7 @@ export default function Index() {
             </div>
             
             <div className="bg-primary-foreground/10 rounded-3xl p-8">
-              <div className="w-14 h-14 rounded-2xl bg-background flex items-center justify-center mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-6">
                 <span className="text-2xl">📊</span>
               </div>
               <h3 className="text-2xl font-bold mb-3">Analytics</h3>
@@ -138,7 +138,7 @@ export default function Index() {
       <footer className="py-8 px-6 bg-primary text-primary-foreground border-t border-primary-foreground/20">
         <div className="container mx-auto text-center">
           <p className="text-primary-foreground/70">
-            &copy; {new Date().getFullYear()} MyPage. All rights reserved.
+            &copy; {new Date().getFullYear()} Entrepage. All rights reserved.
           </p>
         </div>
       </footer>

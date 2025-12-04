@@ -133,7 +133,7 @@ export default function Dashboard() {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } else {
       setProfile(data);
-      toast({ title: 'Profile created!', description: `Your page is live at mypage.io/${username}` });
+      toast({ title: 'Profile created!', description: `Your page is live at entrepage.space/${username}` });
     }
   };
 

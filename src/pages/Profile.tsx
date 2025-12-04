@@ -249,7 +249,7 @@ export default function Profile() {
               <Link to="/">
                 <Button className="w-full h-12 bg-[hsl(150,80%,20%)] hover:bg-[hsl(150,80%,25%)] text-white font-semibold rounded-lg gap-2">
                   <Sparkles className="w-4 h-4" />
-                  Build your MyPage
+                  Build your Entrepage
                 </Button>
               </Link>
             </div>

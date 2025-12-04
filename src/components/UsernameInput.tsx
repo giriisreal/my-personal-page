@@ -42,7 +42,7 @@ export function UsernameInput() {
     <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
       <div className="relative flex-1">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
-          mypage.io/
+        entrepage.space/
         </div>
         <Input
           value={username}
