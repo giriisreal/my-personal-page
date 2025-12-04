@@ -39,6 +39,11 @@ interface CustomLink {
   icon?: string;
   size?: string;
   color?: string;
+  stripe_api_key?: string;
+  lemonsqueezy_api_key?: string;
+  lemonsqueezy_store_id?: string;
+  live_revenue?: number;
+  revenue_updated_at?: string;
 }
 
 interface PageView {
@@ -199,7 +204,7 @@ export default function Dashboard() {
     if (error) toast({ title: 'Error', description: error.message, variant: 'destructive' });
   };
 
-  const updateLink = (id: string, field: keyof CustomLink, value: string) => {
+  const updateLink = (id: string, field: keyof CustomLink, value: string | number | null) => {
     setCustomLinks(customLinks.map(link => 
       link.id === id ? { ...link, [field]: value } : link
     ));
@@ -216,6 +221,8 @@ export default function Dashboard() {
         icon: link.icon,
         size: link.size,
         color: link.color,
+        live_revenue: link.live_revenue,
+        revenue_updated_at: link.revenue_updated_at,
       })
       .eq('id', link.id);
     if (error) toast({ title: 'Error', description: error.message, variant: 'destructive' });

@@ -52,6 +52,11 @@ interface CustomLink {
   icon?: string;
   size?: string;
   color?: string;
+  stripe_api_key?: string;
+  lemonsqueezy_api_key?: string;
+  lemonsqueezy_store_id?: string;
+  live_revenue?: number;
+  revenue_updated_at?: string;
 }
 
 interface PageTabProps {
@@ -61,7 +66,7 @@ interface PageTabProps {
   onProfileChange: (profile: Profile) => void;
   onLinksChange: (links: CustomLink[]) => void;
   onAddLink: () => void;
-  onUpdateLink: (id: string, field: keyof CustomLink, value: string) => void;
+  onUpdateLink: (id: string, field: keyof CustomLink, value: string | number | null) => void;
   onSaveLink: (link: CustomLink) => void;
   onDeleteLink: (id: string) => void;
   onAvatarUpload: (url: string) => void;

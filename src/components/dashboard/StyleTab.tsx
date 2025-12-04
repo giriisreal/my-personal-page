@@ -12,9 +12,13 @@ const THEMES = [
   { id: 'light', name: 'Light', bg: 'bg-white', text: 'text-black' },
   { id: 'dark', name: 'Dark', bg: 'bg-zinc-900', text: 'text-white' },
   { id: 'purple', name: 'Purple', bg: 'bg-gradient-to-br from-purple-500 to-violet-600', text: 'text-white' },
-  { id: 'orange', name: 'Orange', bg: 'bg-gradient-to-br from-orange-400 to-amber-500', text: 'text-white' },
   { id: 'blue', name: 'Blue', bg: 'bg-gradient-to-br from-blue-500 to-cyan-500', text: 'text-white' },
   { id: 'green', name: 'Green', bg: 'bg-gradient-to-br from-emerald-500 to-teal-500', text: 'text-white' },
+  { id: 'indigo', name: 'Indigo', bg: 'bg-gradient-to-br from-indigo-500 to-purple-600', text: 'text-white' },
+  { id: 'rose', name: 'Rose', bg: 'bg-gradient-to-br from-rose-400 to-pink-600', text: 'text-white' },
+  { id: 'teal', name: 'Teal', bg: 'bg-gradient-to-br from-teal-400 to-cyan-600', text: 'text-white' },
+  { id: 'slate', name: 'Slate', bg: 'bg-gradient-to-br from-slate-600 to-slate-800', text: 'text-white' },
+  { id: 'amber', name: 'Amber', bg: 'bg-gradient-to-br from-amber-400 to-orange-500', text: 'text-white' },
 ];
 
 interface StyleTabProps {

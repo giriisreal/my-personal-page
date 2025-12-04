@@ -33,6 +33,7 @@ interface CustomLink {
   category?: string;
   size?: string;
   color?: string;
+  live_revenue?: number;
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -292,14 +293,19 @@ export default function Profile() {
                         </div>
                       </div>
                       
-                      {/* Status Badge */}
-                      <div className="mt-4 flex items-center gap-2">
+                      {/* Status Badge & Revenue */}
+                      <div className="mt-4 flex items-center gap-2 flex-wrap">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
                           {statusInfo.label}
                         </span>
                         {link.category && (
                           <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/20 text-white">
                             {link.category}
+                          </span>
+                        )}
+                        {link.live_revenue !== null && link.live_revenue !== undefined && (
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/30 text-white">
+                            ${link.live_revenue.toLocaleString()}/mo
                           </span>
                         )}
                       </div>
