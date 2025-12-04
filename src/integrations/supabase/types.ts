@@ -17,6 +17,7 @@ export type Database = {
       custom_links: {
         Row: {
           category: string | null
+          color: string | null
           created_at: string
           icon: string | null
           id: string
@@ -29,6 +30,7 @@ export type Database = {
         }
         Insert: {
           category?: string | null
+          color?: string | null
           created_at?: string
           icon?: string | null
           id?: string
@@ -41,6 +43,7 @@ export type Database = {
         }
         Update: {
           category?: string | null
+          color?: string | null
           created_at?: string
           icon?: string | null
           id?: string

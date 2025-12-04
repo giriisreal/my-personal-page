@@ -38,6 +38,7 @@ interface CustomLink {
   category?: string;
   icon?: string;
   size?: string;
+  color?: string;
 }
 
 interface PageView {
@@ -214,6 +215,7 @@ export default function Dashboard() {
         category: link.category,
         icon: link.icon,
         size: link.size,
+        color: link.color,
       })
       .eq('id', link.id);
     if (error) toast({ title: 'Error', description: error.message, variant: 'destructive' });
