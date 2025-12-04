@@ -23,6 +23,8 @@ interface Profile {
   website_url: string | null;
   location?: string | null;
   revenue?: string | null;
+  theme?: string | null;
+  font?: string | null;
 }
 
 interface CustomLink {
@@ -34,8 +36,57 @@ interface CustomLink {
   category?: string;
   size?: string;
   color?: string;
+  text_color?: string;
   live_revenue?: number;
 }
+
+// Theme pairs: [background, accent]
+const THEMES: Record<string, [string, string]> = {
+  'light': ['#ffffff', '#1a1a1a'],
+  'purple': ['#ffffff', '#7c3aed'],
+  'green': ['#ffffff', '#10b981'],
+  'rose': ['#ffffff', '#f43f5e'],
+  'muted': ['#f5f5f4', '#a8a29e'],
+  'pink': ['#fdf2f8', '#ec4899'],
+  'white': ['#ffffff', '#ffffff'],
+  'blue-light': ['#dbeafe', '#3b82f6'],
+  'indigo': ['#e0e7ff', '#6366f1'],
+  'emerald': ['#d1fae5', '#059669'],
+  'lavender': ['#ede9fe', '#8b5cf6'],
+  'peach': ['#fef3c7', '#f59e0b'],
+  'navy': ['#1e3a5f', '#60a5fa'],
+  'sky': ['#e0f2fe', '#0ea5e9'],
+  'slate': ['#e2e8f0', '#64748b'],
+  'teal-duo': ['#ccfbf1', '#14b8a6'],
+  'violet': ['#f3e8ff', '#a855f7'],
+  'amber': ['#fef9c3', '#eab308'],
+  'dark-blue': ['#172554', '#3b82f6'],
+  'coral': ['#fff1f2', '#fb7185'],
+  'yellow-pink': ['#fef08a', '#ec4899'],
+  'cyan-emerald': ['#a5f3fc', '#10b981'],
+  'neutral': ['#fafafa', '#525252'],
+  'warm-gray': ['#f5f5f4', '#78716c'],
+  'midnight': ['#0f172a', '#38bdf8'],
+  'blush': ['#fce7f3', '#f472b6'],
+  'sunset': ['#fed7aa', '#ea580c'],
+  'forest': ['#bbf7d0', '#16a34a'],
+  'cool-gray': ['#f3f4f6', '#6b7280'],
+  'stone': ['#f5f5f4', '#a8a29e'],
+  'ocean': ['#0c4a6e', '#7dd3fc'],
+};
+
+const FONT_CLASSES: Record<string, string> = {
+  'dm-sans': 'font-sans',
+  'serif': 'font-serif',
+  'mono': 'font-mono',
+};
+
+const isDark = (hex: string): boolean => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return (r * 299 + g * 587 + b * 114) / 1000 < 128;
+};
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   'building': { label: 'Building...', color: 'bg-blue-100 text-blue-700' },
@@ -126,6 +177,12 @@ export default function Profile() {
     { icon: Instagram, url: profile.instagram_url, label: 'Instagram' },
   ] : [];
 
+  // Get theme colors
+  const themeColors = profile ? (THEMES[profile.theme || 'light'] || THEMES.light) : THEMES.light;
+  const [bgColor, accentColor] = themeColors;
+  const darkBg = isDark(bgColor);
+  const fontClass = profile ? (FONT_CLASSES[profile.font || 'dm-sans'] || FONT_CLASSES['dm-sans']) : FONT_CLASSES['dm-sans'];
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FDF6EC] flex items-center justify-center">
@@ -159,14 +216,14 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC]">
+    <div className={`min-h-screen ${fontClass}`} style={{ backgroundColor: bgColor }}>
       <div className="container mx-auto px-4 py-8 lg:py-12">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 max-w-7xl mx-auto">
           {/* Left Sidebar - Profile Info */}
           <div className="lg:w-80 lg:flex-shrink-0">
             <div className="lg:sticky lg:top-8">
               {/* Avatar */}
-              <div className="w-40 h-40 rounded-full bg-gradient-to-br from-lime-300 to-green-500 flex items-center justify-center text-white font-bold text-5xl mx-auto lg:mx-0 mb-6 overflow-hidden shadow-lg border-4 border-white">
+              <div className="w-40 h-40 rounded-full flex items-center justify-center text-white font-bold text-5xl mx-auto lg:mx-0 mb-6 overflow-hidden shadow-lg border-4 border-white" style={{ backgroundColor: accentColor }}>
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt={profile.display_name || ''} className="w-full h-full object-cover" />
                 ) : (
@@ -175,12 +232,12 @@ export default function Profile() {
               </div>
 
               {/* Name */}
-              <h1 className="text-3xl font-bold text-gray-900 mb-3 text-center lg:text-left">
+              <h1 className="text-3xl font-bold mb-3 text-center lg:text-left" style={{ color: darkBg ? '#fff' : '#1a1a1a' }}>
                 {profile?.display_name || profile?.username}
               </h1>
               
               {/* Location & Revenue */}
-              <div className="flex items-center justify-center lg:justify-start gap-4 text-gray-600 mb-4">
+              <div className="flex items-center justify-center lg:justify-start gap-4 mb-4" style={{ color: darkBg ? 'rgba(255,255,255,0.7)' : '#4b5563' }}>
                 {profile?.location && (
                   <div className="flex items-center gap-1">
                     <MapPin className="w-4 h-4" />

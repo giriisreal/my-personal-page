@@ -30,6 +30,7 @@ export type Database = {
           size: string | null
           status: string | null
           stripe_api_key: string | null
+          text_color: string | null
           title: string
           url: string
         }
@@ -48,6 +49,7 @@ export type Database = {
           size?: string | null
           status?: string | null
           stripe_api_key?: string | null
+          text_color?: string | null
           title: string
           url: string
         }
@@ -66,6 +68,7 @@ export type Database = {
           size?: string | null
           status?: string | null
           stripe_api_key?: string | null
+          text_color?: string | null
           title?: string
           url?: string
         }
@@ -120,12 +123,14 @@ export type Database = {
           bio: string | null
           created_at: string
           display_name: string | null
+          font: string | null
           github_url: string | null
           id: string
           instagram_url: string | null
           linkedin_url: string | null
           location: string | null
           revenue: string | null
+          theme: string | null
           twitter_url: string | null
           updated_at: string
           user_id: string
@@ -137,12 +142,14 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          font?: string | null
           github_url?: string | null
           id?: string
           instagram_url?: string | null
           linkedin_url?: string | null
           location?: string | null
           revenue?: string | null
+          theme?: string | null
           twitter_url?: string | null
           updated_at?: string
           user_id: string
@@ -154,12 +161,14 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          font?: string | null
           github_url?: string | null
           id?: string
           instagram_url?: string | null
           linkedin_url?: string | null
           location?: string | null
           revenue?: string | null
+          theme?: string | null
           twitter_url?: string | null
           updated_at?: string
           user_id?: string

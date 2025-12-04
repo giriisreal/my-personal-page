@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const FONTS = [
   { id: 'dm-sans', name: 'DM Sans', preview: 'Aa' },
@@ -50,20 +51,21 @@ const THEMES = [
 
 interface StyleTabProps {
   profileId: string;
+  initialFont?: string;
+  initialTheme?: string;
   onStyleChange?: (font: string, theme: string) => void;
 }
 
-export function StyleTab({ profileId, onStyleChange }: StyleTabProps) {
-  const [selectedFont, setSelectedFont] = useState('dm-sans');
-  const [selectedTheme, setSelectedTheme] = useState('purple');
+export function StyleTab({ profileId, initialFont, initialTheme, onStyleChange }: StyleTabProps) {
+  const [selectedFont, setSelectedFont] = useState(initialFont || 'dm-sans');
+  const [selectedTheme, setSelectedTheme] = useState(initialTheme || 'light');
   const [hasChanges, setHasChanges] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const savedFont = localStorage.getItem(`style_font_${profileId}`);
-    const savedTheme = localStorage.getItem(`style_theme_${profileId}`);
-    if (savedFont) setSelectedFont(savedFont);
-    if (savedTheme) setSelectedTheme(savedTheme);
-  }, [profileId]);
+    if (initialFont) setSelectedFont(initialFont);
+    if (initialTheme) setSelectedTheme(initialTheme);
+  }, [initialFont, initialTheme]);
 
   const handleFontChange = (fontId: string) => {
     setSelectedFont(fontId);
@@ -77,11 +79,20 @@ export function StyleTab({ profileId, onStyleChange }: StyleTabProps) {
     onStyleChange?.(selectedFont, themeId);
   };
 
-  const handleSave = () => {
-    localStorage.setItem(`style_font_${profileId}`, selectedFont);
-    localStorage.setItem(`style_theme_${profileId}`, selectedTheme);
-    setHasChanges(false);
-    toast.success('Style saved!');
+  const handleSave = async () => {
+    setSaving(true);
+    const { error } = await supabase
+      .from('profiles')
+      .update({ font: selectedFont, theme: selectedTheme })
+      .eq('id', profileId);
+
+    if (error) {
+      toast.error('Failed to save style');
+    } else {
+      setHasChanges(false);
+      toast.success('Style saved!');
+    }
+    setSaving(false);
   };
 
   return (
@@ -172,10 +183,10 @@ export function StyleTab({ profileId, onStyleChange }: StyleTabProps) {
       <div className="pt-4">
         <Button 
           onClick={handleSave}
-          disabled={!hasChanges}
+          disabled={!hasChanges || saving}
           className="w-full sm:w-auto"
         >
-          Save Style
+          {saving ? 'Saving...' : 'Save Style'}
         </Button>
       </div>
     </div>
