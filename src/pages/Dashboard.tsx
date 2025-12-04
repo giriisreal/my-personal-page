@@ -267,9 +267,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-card">
       {/* Header */}
-      <header className="border-b border-border/50 bg-background/80 backdrop-blur-lg sticky top-0 z-50">
+      <header className="border-b border-border/30 bg-card/80 backdrop-blur-lg sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <DashboardTabs activeTab={activeTab} onTabChange={setActiveTab} />
           

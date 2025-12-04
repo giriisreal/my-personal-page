@@ -160,7 +160,7 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
         {/* Link Icon with upload */}
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center flex-shrink-0 overflow-hidden hover:opacity-80 transition-opacity relative group"
+          className="w-12 h-12 rounded-xl bg-gradient-to-br from-lime-400 to-green-600 flex items-center justify-center flex-shrink-0 overflow-hidden hover:opacity-80 transition-opacity relative group"
           disabled={uploading}
         >
           {isImageUrl(link.icon) ? (

@@ -53,8 +53,8 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const THEME_STYLES: Record<string, { bg: string; text: string; secondary: string; accent: string }> = {
-  'light': { bg: 'bg-white', text: 'text-gray-900', secondary: 'bg-gray-50', accent: 'bg-teal-500' },
-  'dark': { bg: 'bg-zinc-900', text: 'text-white', secondary: 'bg-zinc-800', accent: 'bg-teal-500' },
+  'light': { bg: 'bg-white', text: 'text-gray-900', secondary: 'bg-gray-50', accent: 'bg-[hsl(150,80%,20%)]' },
+  'dark': { bg: 'bg-zinc-900', text: 'text-white', secondary: 'bg-zinc-800', accent: 'bg-[hsl(150,80%,20%)]' },
   'purple': { bg: 'bg-gradient-to-br from-purple-500 to-violet-600', text: 'text-white', secondary: 'bg-white/10', accent: 'bg-white' },
   'orange': { bg: 'bg-gradient-to-br from-orange-400 to-amber-500', text: 'text-white', secondary: 'bg-white/10', accent: 'bg-white' },
   'blue': { bg: 'bg-gradient-to-br from-blue-500 to-cyan-500', text: 'text-white', secondary: 'bg-white/10', accent: 'bg-white' },
@@ -119,7 +119,7 @@ export function PhonePreview({ profile, customLinks, theme = 'light', font = 'dm
 
             {/* Avatar */}
             <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white font-bold text-xl overflow-hidden ring-3 ring-white/50 shadow-lg">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-lime-400 to-green-600 flex items-center justify-center text-white font-bold text-xl overflow-hidden ring-3 ring-white/50 shadow-lg">
                 {profile.avatar_url ? (
                   <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
                 ) : (
