@@ -132,8 +132,8 @@ export function PageTab({
             value={profile.bio || ''}
             onChange={(e) => onProfileChange({ ...profile, bio: e.target.value })}
             placeholder="Just a young nerd who cannot fix his mind between finance and tech"
-            className="bg-transparent border-none p-0 resize-none focus-visible:ring-0 text-muted-foreground"
-            rows={2}
+            className="min-h-[80px] resize-none border-2 border-primary/30 rounded-xl p-3 focus:border-primary focus-visible:ring-0 text-muted-foreground"
+            rows={3}
           />
         </div>
       </div>
