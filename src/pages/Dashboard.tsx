@@ -8,13 +8,33 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Navbar } from '@/components/Navbar';
+import { AvatarUpload } from '@/components/AvatarUpload';
+import { UsernameEditor } from '@/components/UsernameEditor';
+import { SortableLink } from '@/components/SortableLink';
+import { AnalyticsChart } from '@/components/AnalyticsChart';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { 
   User, Link2, Twitter, Github, Instagram, Linkedin, Globe, 
-  Plus, Trash2, Save, ExternalLink, BarChart3, Eye, Loader2
+  Plus, Save, ExternalLink, BarChart3, Eye, Loader2, ChevronDown, ChevronUp
 } from 'lucide-react';
 
 interface Profile {
   id: string;
+  user_id: string;
   username: string;
   display_name: string | null;
   bio: string | null;
@@ -33,17 +53,30 @@ interface CustomLink {
   position: number;
 }
 
+interface PageView {
+  id: string;
+  viewed_at: string;
+  referrer: string | null;
+  user_agent: string | null;
+}
+
 export default function Dashboard() {
   const { user, loading: authLoading } = useAuth();
   const [searchParams] = useSearchParams();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [customLinks, setCustomLinks] = useState<CustomLink[]>([]);
-  const [pageViews, setPageViews] = useState(0);
+  const [pageViews, setPageViews] = useState<PageView[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const claimedUsername = searchParams.get('username');
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -109,11 +142,12 @@ export default function Dashboard() {
   };
 
   const fetchPageViews = async (profileId: string) => {
-    const { count } = await supabase
+    const { data } = await supabase
       .from('page_views')
-      .select('*', { count: 'exact', head: true })
-      .eq('profile_id', profileId);
-    setPageViews(count || 0);
+      .select('*')
+      .eq('profile_id', profileId)
+      .order('viewed_at', { ascending: false });
+    if (data) setPageViews(data);
   };
 
   const handleSave = async () => {
@@ -125,6 +159,7 @@ export default function Dashboard() {
       .update({
         display_name: profile.display_name,
         bio: profile.bio,
+        avatar_url: profile.avatar_url,
         twitter_url: profile.twitter_url,
         github_url: profile.github_url,
         instagram_url: profile.instagram_url,
@@ -141,6 +176,18 @@ export default function Dashboard() {
     setSaving(false);
   };
 
+  const handleAvatarUpload = (url: string) => {
+    if (profile) {
+      setProfile({ ...profile, avatar_url: url });
+    }
+  };
+
+  const handleUsernameUpdate = (newUsername: string) => {
+    if (profile) {
+      setProfile({ ...profile, username: newUsername });
+    }
+  };
+
   const addLink = async () => {
     if (!profile) return;
     const { data, error } = await supabase
@@ -152,7 +199,7 @@ export default function Dashboard() {
     if (error) toast({ title: 'Error', description: error.message, variant: 'destructive' });
   };
 
-  const updateLink = async (id: string, field: 'title' | 'url', value: string) => {
+  const updateLink = (id: string, field: 'title' | 'url', value: string) => {
     setCustomLinks(customLinks.map(link => 
       link.id === id ? { ...link, [field]: value } : link
     ));
@@ -170,6 +217,25 @@ export default function Dashboard() {
   const deleteLink = async (id: string) => {
     const { error } = await supabase.from('custom_links').delete().eq('id', id);
     if (!error) setCustomLinks(customLinks.filter(link => link.id !== id));
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = customLinks.findIndex((link) => link.id === active.id);
+    const newIndex = customLinks.findIndex((link) => link.id === over.id);
+    const newLinks = arrayMove(customLinks, oldIndex, newIndex);
+
+    setCustomLinks(newLinks);
+
+    // Update positions in database
+    for (let i = 0; i < newLinks.length; i++) {
+      await supabase
+        .from('custom_links')
+        .update({ position: i })
+        .eq('id', newLinks[i].id);
+    }
   };
 
   if (authLoading || loading) {
@@ -235,23 +301,36 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Analytics Card */}
+          {/* Analytics Summary Card */}
           <div className="bg-card rounded-2xl p-6 border border-border/50 mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-primary-foreground" />
+            <button 
+              onClick={() => setShowAnalytics(!showAnalytics)}
+              className="w-full flex items-center justify-between"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-violet-500 flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm text-muted-foreground">Total page views</p>
+                  <p className="text-3xl font-bold flex items-center gap-2">
+                    <Eye className="w-6 h-6 text-muted-foreground" />
+                    {pageViews.length}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Total page views</p>
-                <p className="text-3xl font-bold flex items-center gap-2">
-                  <Eye className="w-6 h-6 text-muted-foreground" />
-                  {pageViews}
-                </p>
-              </div>
-            </div>
+              {showAnalytics ? (
+                <ChevronUp className="w-5 h-5 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-muted-foreground" />
+              )}
+            </button>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          {/* Detailed Analytics */}
+          {showAnalytics && <AnalyticsChart pageViews={pageViews} />}
+
+          <div className="grid lg:grid-cols-2 gap-8 mt-8">
             {/* Profile Section */}
             <div className="bg-card rounded-2xl p-6 border border-border/50">
               <div className="flex items-center gap-2 mb-6">
@@ -259,11 +338,26 @@ export default function Dashboard() {
                 <h2 className="text-xl font-semibold">Profile</h2>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
+                {/* Avatar Upload */}
+                <div className="flex justify-center">
+                  <AvatarUpload
+                    userId={user!.id}
+                    currentAvatarUrl={profile.avatar_url}
+                    displayName={profile.display_name}
+                    username={profile.username}
+                    onUpload={handleAvatarUpload}
+                  />
+                </div>
+
+                {/* Username */}
                 <div>
                   <Label>Username</Label>
-                  <Input value={profile.username} disabled className="bg-secondary/50" />
-                  <p className="text-xs text-muted-foreground mt-1">mypage.io/{profile.username}</p>
+                  <UsernameEditor
+                    currentUsername={profile.username}
+                    profileId={profile.id}
+                    onUpdate={handleUsernameUpdate}
+                  />
                 </div>
 
                 <div>
@@ -361,36 +455,34 @@ export default function Dashboard() {
               </Button>
             </div>
 
-            <div className="space-y-4">
-              {customLinks.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">
-                  No custom links yet. Add one to get started!
-                </p>
-              ) : (
-                customLinks.map((link) => (
-                  <div key={link.id} className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl">
-                    <div className="flex-1 grid grid-cols-2 gap-3">
-                      <Input
-                        value={link.title}
-                        onChange={(e) => updateLink(link.id, 'title', e.target.value)}
-                        placeholder="Link title"
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={customLinks.map(link => link.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-4">
+                  {customLinks.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-8">
+                      No custom links yet. Add one to get started!
+                    </p>
+                  ) : (
+                    customLinks.map((link) => (
+                      <SortableLink
+                        key={link.id}
+                        link={link}
+                        onUpdate={updateLink}
+                        onSave={saveLink}
+                        onDelete={deleteLink}
                       />
-                      <Input
-                        value={link.url}
-                        onChange={(e) => updateLink(link.id, 'url', e.target.value)}
-                        placeholder="https://..."
-                      />
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={() => saveLink(link)}>
-                      <Save className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => deleteLink(link.id)}>
-                      <Trash2 className="w-4 h-4 text-destructive" />
-                    </Button>
-                  </div>
-                ))
-              )}
-            </div>
+                    ))
+                  )}
+                </div>
+              </SortableContext>
+            </DndContext>
           </div>
         </div>
       </div>

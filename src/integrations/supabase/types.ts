@@ -53,6 +53,7 @@ export type Database = {
         Row: {
           id: string
           profile_id: string
+          referrer: string | null
           user_agent: string | null
           viewed_at: string
           visitor_ip: string | null
@@ -60,6 +61,7 @@ export type Database = {
         Insert: {
           id?: string
           profile_id: string
+          referrer?: string | null
           user_agent?: string | null
           viewed_at?: string
           visitor_ip?: string | null
@@ -67,6 +69,7 @@ export type Database = {
         Update: {
           id?: string
           profile_id?: string
+          referrer?: string | null
           user_agent?: string | null
           viewed_at?: string
           visitor_ip?: string | null

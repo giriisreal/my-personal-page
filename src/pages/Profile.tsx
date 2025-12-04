@@ -54,8 +54,12 @@ export default function Profile() {
 
     setProfile(profileData);
 
-    // Record page view
-    await supabase.from('page_views').insert({ profile_id: profileData.id });
+    // Record page view with referrer
+    await supabase.from('page_views').insert({ 
+      profile_id: profileData.id,
+      referrer: document.referrer || null,
+      user_agent: navigator.userAgent || null,
+    });
 
     // Fetch custom links
     const { data: linksData } = await supabase
@@ -88,8 +92,8 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-6">
-            <Sparkles className="w-8 h-8 text-primary-foreground" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-500 to-violet-500 flex items-center justify-center mx-auto mb-6">
+            <Sparkles className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold mb-2">Page not found</h1>
           <p className="text-muted-foreground mb-6">
@@ -120,7 +124,7 @@ export default function Profile() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md text-center animate-fade-in">
           {/* Avatar */}
-          <div className="w-24 h-24 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-3xl mx-auto mb-6 overflow-hidden shadow-glow">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-500 to-violet-500 flex items-center justify-center text-white font-bold text-3xl mx-auto mb-6 overflow-hidden shadow-lg shadow-purple-500/25">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt={profile.display_name || ''} className="w-full h-full object-cover" />
             ) : (
@@ -169,7 +173,7 @@ export default function Profile() {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 bg-card rounded-xl border border-border/50 hover:border-primary/30 hover:shadow-glow transition-all duration-300 group"
+                  className="flex items-center justify-between p-4 bg-card rounded-xl border border-border/50 hover:border-primary/30 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 group"
                 >
                   <span className="font-medium group-hover:text-primary transition-colors">
                     {link.title}
