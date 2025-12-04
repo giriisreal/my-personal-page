@@ -28,9 +28,9 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="bg-card rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
-            <Link to="/" className="text-2xl font-bold text-foreground tracking-tight">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="bg-card rounded-full px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between shadow-lg">
+            <Link to="/" className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
               Entrepage
             </Link>
             
@@ -39,13 +39,13 @@ export default function Index() {
               <a href="#pricing" className="text-foreground/80 hover:text-foreground transition-colors font-medium">Pricing</a>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Link to="/auth?mode=login">
-                <Button variant="ghost" className="text-foreground font-medium hover:bg-foreground/5">
+                <Button variant="ghost" className="text-foreground font-medium hover:bg-foreground/5 text-sm sm:text-base px-3 sm:px-4">
                   Log in
                 </Button>
               </Link>
-              <Link to="/auth?mode=signup">
+              <Link to="/auth?mode=signup" className="hidden sm:block">
                 <Button className="bg-primary text-primary-foreground font-semibold rounded-full px-6">
                   Sign up free
                 </Button>
@@ -56,20 +56,20 @@ export default function Index() {
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center pt-24 pb-16 px-6">
+      <section className="min-h-screen flex items-center pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="max-w-2xl">
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-foreground leading-[0.95] mb-8 tracking-tight" style={{ fontStyle: 'italic' }}>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-foreground leading-[0.95] mb-6 sm:mb-8 tracking-tight" style={{ fontStyle: 'italic' }}>
               Fill your page with startups.
             </h1>
             
-            <p className="text-xl md:text-2xl text-foreground/80 mb-10 leading-relaxed max-w-xl">
+            <p className="text-lg sm:text-xl md:text-2xl text-foreground/80 mb-8 sm:mb-10 leading-relaxed max-w-xl">
               Join thousands of creators sharing their startups. One link to help you share everything you create, curate and sell from your social media profiles.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-3 max-w-lg">
-              <div className="flex-1 relative">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
+            <div className="flex flex-col gap-3 max-w-lg">
+              <div className="relative">
+                <span className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-sm sm:text-base">
                  entrepage/
                 </span>
                 <input
@@ -77,14 +77,14 @@ export default function Index() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
                   onKeyDown={(e) => e.key === 'Enter' && handleGetStarted()}
-                  placeholder="                         "
-                  className="w-full h-14 pl-20 pr-4 rounded-full bg-card border-0 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-lg"
+                  placeholder="yourname"
+                  className="w-full h-12 sm:h-14 pl-[90px] sm:pl-[110px] pr-4 rounded-full bg-card border-0 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-base sm:text-lg"
                 />
               </div>
               <Button 
                 onClick={handleGetStarted}
                 disabled={checking || !username.trim()}
-                className="h-14 px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full text-lg"
+                className="h-12 sm:h-14 px-6 sm:px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full text-base sm:text-lg w-full sm:w-auto"
               >
                 {checking ? 'Checking...' : 'Get started for free'}
               </Button>
