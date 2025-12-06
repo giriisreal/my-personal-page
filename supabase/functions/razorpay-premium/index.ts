@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { encode as encodeHex } from "https://deno.land/std@0.190.0/encoding/hex.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -107,7 +106,9 @@ serve(async (req) => {
     if (body.action === 'verify_payment') {
       const { profileId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = body as VerifyPaymentRequest;
 
-      // Verify signature using Web Crypto API
+      console.log('Verifying payment:', { razorpay_order_id, razorpay_payment_id });
+
+      // Verify signature using Web Crypto API (order_id|payment_id format per Razorpay docs)
       const encoder = new TextEncoder();
       const key = await crypto.subtle.importKey(
         "raw",
@@ -118,10 +119,11 @@ serve(async (req) => {
       );
       const signatureData = encoder.encode(`${razorpay_order_id}|${razorpay_payment_id}`);
       const signatureBuffer = await crypto.subtle.sign("HMAC", key, signatureData);
-      const expectedSignature = new TextDecoder().decode(encodeHex(new Uint8Array(signatureBuffer)));
+      const hashArray = Array.from(new Uint8Array(signatureBuffer));
+      const expectedSignature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
       const isValid = expectedSignature === razorpay_signature;
-      console.log('Signature verification:', isValid ? 'passed' : 'failed');
+      console.log('Signature verification:', isValid ? 'passed' : 'failed', { expectedSignature, razorpay_signature });
 
       if (!isValid) {
         // Update payment status as failed
