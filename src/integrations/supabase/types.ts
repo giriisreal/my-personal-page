@@ -123,6 +123,53 @@ export type Database = {
           },
         ]
       }
+      premium_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          profile_id: string
+          razorpay_order_id: string
+          razorpay_payment_id: string | null
+          razorpay_signature: string | null
+          status: string
+          verified_at: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          profile_id: string
+          razorpay_order_id: string
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
+          status?: string
+          verified_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          profile_id?: string
+          razorpay_order_id?: string
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
+          status?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "premium_payments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -133,8 +180,11 @@ export type Database = {
           github_url: string | null
           id: string
           instagram_url: string | null
+          is_premium: boolean
           linkedin_url: string | null
           location: string | null
+          premium_since: string | null
+          razorpay_payment_id: string | null
           revenue: string | null
           theme: string | null
           twitter_url: string | null
@@ -152,8 +202,11 @@ export type Database = {
           github_url?: string | null
           id?: string
           instagram_url?: string | null
+          is_premium?: boolean
           linkedin_url?: string | null
           location?: string | null
+          premium_since?: string | null
+          razorpay_payment_id?: string | null
           revenue?: string | null
           theme?: string | null
           twitter_url?: string | null
@@ -171,8 +224,11 @@ export type Database = {
           github_url?: string | null
           id?: string
           instagram_url?: string | null
+          is_premium?: boolean
           linkedin_url?: string | null
           location?: string | null
+          premium_since?: string | null
+          razorpay_payment_id?: string | null
           revenue?: string | null
           theme?: string | null
           twitter_url?: string | null
