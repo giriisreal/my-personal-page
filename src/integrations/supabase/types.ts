@@ -88,9 +88,54 @@ export type Database = {
           },
         ]
       }
+      gallery_images: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string
+          position: number | null
+          profile_id: string
+          title: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url: string
+          position?: number | null
+          profile_id: string
+          title?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string
+          position?: number | null
+          profile_id?: string
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_images_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_views: {
         Row: {
+          city: string | null
+          country: string | null
+          device_type: string | null
           id: string
+          link_clicked: string | null
           profile_id: string
           referrer: string | null
           user_agent: string | null
@@ -98,7 +143,11 @@ export type Database = {
           visitor_ip: string | null
         }
         Insert: {
+          city?: string | null
+          country?: string | null
+          device_type?: string | null
           id?: string
+          link_clicked?: string | null
           profile_id: string
           referrer?: string | null
           user_agent?: string | null
@@ -106,7 +155,11 @@ export type Database = {
           visitor_ip?: string | null
         }
         Update: {
+          city?: string | null
+          country?: string | null
+          device_type?: string | null
           id?: string
+          link_clicked?: string | null
           profile_id?: string
           referrer?: string | null
           user_agent?: string | null

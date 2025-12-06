@@ -3,19 +3,28 @@ import { Mail, Eye, MousePointer, Link2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { format, subDays, startOfDay, eachDayOfInterval } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
+import { DeepAnalytics } from './DeepAnalytics';
+import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 
 interface PageView {
   id: string;
   viewed_at: string;
   referrer: string | null;
+  user_agent?: string | null;
+  device_type?: string | null;
+  country?: string | null;
+  city?: string | null;
 }
 
 interface StatsTabProps {
   pageViews: PageView[];
   profileId: string;
+  isPremium?: boolean;
+  profileUrl?: string;
+  avatarUrl?: string | null;
 }
 
-export function StatsTab({ pageViews, profileId }: StatsTabProps) {
+export function StatsTab({ pageViews, profileId, isPremium = false, profileUrl = '', avatarUrl }: StatsTabProps) {
   const [subscriberCount, setSubscriberCount] = useState(0);
   const [timePeriod, setTimePeriod] = useState(7);
 
@@ -188,6 +197,16 @@ export function StatsTab({ pageViews, profileId }: StatsTabProps) {
           </div>
         </div>
       </div>
+
+      {/* Deep Analytics - Premium */}
+      <DeepAnalytics pageViews={pageViews} isPremium={isPremium} />
+
+      {/* QR Code Generator - Premium */}
+      <QRCodeGenerator 
+        profileUrl={profileUrl} 
+        avatarUrl={avatarUrl}
+        isPremium={isPremium} 
+      />
     </div>
   );
 }
