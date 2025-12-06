@@ -153,7 +153,7 @@ export function PhonePreview({ profile, customLinks, theme = 'light', font = 'dm
           </div>
           
           {/* Content - scrollable */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-2 space-y-3">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-2 space-y-3 scrollbar-hide">
             {/* Share button */}
             <div className="flex justify-end">
               <button 
@@ -331,6 +331,14 @@ export function PhonePreview({ profile, customLinks, theme = 'light', font = 'dm
                 </div>
               ))}
             </div>
+          </div>
+          
+          {/* Scroll hint */}
+          <div 
+            className="text-center py-1.5 text-[9px] tracking-wide opacity-50 flex-shrink-0"
+            style={{ color: darkBg ? '#fff' : '#6b7280' }}
+          >
+            ↓ scroll to see more
           </div>
         </div>
       </div>
