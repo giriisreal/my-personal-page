@@ -45,11 +45,12 @@ serve(async (req) => {
     if (body.action === 'create_order') {
       const { profileId } = body as CreateOrderRequest;
 
-      // Create Razorpay order
+      // Create Razorpay order (receipt max 40 chars)
+      const shortId = profileId.substring(0, 8);
       const orderData = {
         amount: PREMIUM_PRICE,
         currency: CURRENCY,
-        receipt: `premium_${profileId}_${Date.now()}`,
+        receipt: `prem_${shortId}_${Date.now()}`,
         notes: {
           profile_id: profileId,
           type: 'lifetime_premium'
