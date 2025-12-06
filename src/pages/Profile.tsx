@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { RevenueProgressBar } from '@/components/RevenueProgressBar';
-import { ParallaxScroll } from '@/components/ui/parallax-scroll';
+import { ThreeDPhotoCarousel } from '@/components/ui/3d-carousel';
 import { 
   Twitter, Github, Instagram, Linkedin, Globe, Youtube,
   ArrowLeft, Loader2, Sparkles, MapPin
@@ -416,14 +416,9 @@ export default function Profile() {
                 <h2 className="text-xl font-bold mb-4" style={{ color: darkBg ? '#fff' : '#1a1a1a' }}>
                   Journey
                 </h2>
-                <ParallaxScroll 
-                  images={galleryImages.map(img => ({
-                    id: img.id,
-                    url: img.image_url,
-                    title: img.title || undefined,
-                    category: img.category || undefined,
-                  }))}
-                />
+                <div className="bg-white/50 rounded-2xl overflow-hidden backdrop-blur-sm">
+                  <ThreeDPhotoCarousel images={galleryImages.map(img => img.image_url)} />
+                </div>
               </div>
             )}
           </div>
