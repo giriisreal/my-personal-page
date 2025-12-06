@@ -25,6 +25,7 @@ interface Profile {
   revenue?: string | null;
   theme?: string | null;
   font?: string | null;
+  is_premium?: boolean;
 }
 
 interface CustomLink {
@@ -304,16 +305,18 @@ export default function Profile() {
                 ))}
               </div>
 
-              {/* Build your page CTA */}
-              <Link to="/">
-                <Button 
-                  className="w-full h-12 font-semibold rounded-lg gap-2 hover:opacity-90"
-                  style={{ backgroundColor: accentColor, color: isDark(accentColor) ? '#fff' : '#1a1a1a' }}
-                >
-                  <Sparkles className="w-4 h-4" />
-                  Build your Entrepage
-                </Button>
-              </Link>
+              {/* Build your page CTA - Hidden for premium users */}
+              {!profile?.is_premium && (
+                <Link to="/">
+                  <Button 
+                    className="w-full h-12 font-semibold rounded-lg gap-2 hover:opacity-90"
+                    style={{ backgroundColor: accentColor, color: isDark(accentColor) ? '#fff' : '#1a1a1a' }}
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Build your Entrepage
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
 

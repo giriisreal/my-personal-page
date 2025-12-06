@@ -29,6 +29,8 @@ interface Profile {
   revenue?: string | null;
   theme?: string | null;
   font?: string | null;
+  is_premium?: boolean;
+  premium_since?: string | null;
 }
 
 interface CustomLink {
@@ -338,7 +340,8 @@ export default function Dashboard() {
           {activeTab === 'settings' && (
             <SettingsTab 
               profile={profile} 
-              onUsernameUpdate={handleUsernameUpdate} 
+              onUsernameUpdate={handleUsernameUpdate}
+              onProfileRefresh={fetchProfile}
             />
           )}
         </div>
