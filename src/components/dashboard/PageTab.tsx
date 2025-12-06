@@ -151,7 +151,7 @@ export function PageTab({
           <Textarea
             value={profile.bio || ''}
             onChange={(e) => onProfileChange({ ...profile, bio: e.target.value })}
-            placeholder="Just a young nerd who cannot fix his mind between finance and tech"
+            placeholder="building startups for fun"
             className="min-h-[80px] resize-none border-2 border-primary/30 rounded-xl p-3 focus:border-primary focus-visible:ring-0 text-muted-foreground bg-white"
             rows={3}
           />
