@@ -35,6 +35,7 @@ const TEXT_COLOR_OPTIONS = [
 ];
 
 const COLOR_OPTIONS = [
+  { value: 'hsl(0, 0%, 100%)', label: 'White' },
   { value: 'hsl(150, 80%, 35%)', label: 'Green' },
   { value: 'hsl(220, 80%, 50%)', label: 'Blue' },
   { value: 'hsl(280, 70%, 50%)', label: 'Purple' },
