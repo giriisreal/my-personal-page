@@ -2,3 +2,6 @@ project_id = "zuabbqbdrvhlsbtpsnew"
 
 [functions.fetch-revenue]
 verify_jwt = false
+
+[functions.razorpay-premium]
+verify_jwt = false

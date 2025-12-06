@@ -6,10 +6,13 @@ import { Copy, Check, Download, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { PremiumUpgrade } from '@/components/PremiumUpgrade';
 
 interface Profile {
   id: string;
   username: string;
+  is_premium?: boolean;
+  premium_since?: string | null;
 }
 
 interface Subscriber {
@@ -21,11 +24,12 @@ interface Subscriber {
 interface SettingsTabProps {
   profile: Profile;
   onUsernameUpdate: (username: string) => void;
+  onProfileRefresh?: () => void;
 }
 
 const settingsTabs = ['ACCOUNT', 'BILLING', 'SUBSCRIBERS'];
 
-export function SettingsTab({ profile, onUsernameUpdate }: SettingsTabProps) {
+export function SettingsTab({ profile, onUsernameUpdate, onProfileRefresh }: SettingsTabProps) {
   const [activeSettingsTab, setActiveSettingsTab] = useState('ACCOUNT');
   const [copied, setCopied] = useState(false);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -153,43 +157,11 @@ export function SettingsTab({ profile, onUsernameUpdate }: SettingsTabProps) {
 
       {activeSettingsTab === 'BILLING' && (
         <div className="max-w-xl mx-auto space-y-6">
-          <div className="bg-card rounded-2xl p-6 border border-border/50">
-            <h3 className="text-lg font-semibold mb-4">Current Plan</h3>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">Free</p>
-                <p className="text-sm text-muted-foreground">Basic features included</p>
-              </div>
-              <Button 
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                onClick={() => toast({ title: 'Coming soon', description: 'Pro plans will be available soon!' })}
-              >
-                Upgrade to Pro
-              </Button>
-            </div>
-          </div>
-
-          <div className="bg-card rounded-2xl p-6 border border-border/50">
-            <h3 className="text-lg font-semibold mb-4">Pro Features</h3>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                <span>Custom domain support</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                <span>Advanced analytics</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                <span>Priority support</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                <span>Remove branding</span>
-              </li>
-            </ul>
-          </div>
+          <PremiumUpgrade 
+            profileId={profile.id} 
+            isPremium={profile.is_premium || false}
+            onUpgradeSuccess={() => onProfileRefresh?.()}
+          />
         </div>
       )}
 
