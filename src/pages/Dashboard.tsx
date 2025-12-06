@@ -58,6 +58,14 @@ interface PageView {
   user_agent: string | null;
 }
 
+interface GalleryImage {
+  id: string;
+  image_url: string;
+  title: string | null;
+  category: string | null;
+  position: number;
+}
+
 export default function Dashboard() {
   const { user, loading: authLoading, signOut } = useAuth();
   const [searchParams] = useSearchParams();
@@ -65,6 +73,7 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [customLinks, setCustomLinks] = useState<CustomLink[]>([]);
   const [pageViews, setPageViews] = useState<PageView[]>([]);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState('light');
@@ -127,6 +136,9 @@ export default function Dashboard() {
       setProfile(profileData);
       fetchCustomLinks(profileData.id);
       fetchPageViews(profileData.id);
+      if (profileData.is_premium) {
+        fetchGalleryImages(profileData.id);
+      }
     } else if (claimedUsername) {
       await createProfile(claimedUsername);
     }
@@ -166,6 +178,15 @@ export default function Dashboard() {
       .eq('profile_id', profileId)
       .order('viewed_at', { ascending: false });
     if (data) setPageViews(data);
+  };
+
+  const fetchGalleryImages = async (profileId: string) => {
+    const { data } = await supabase
+      .from('gallery_images')
+      .select('*')
+      .eq('profile_id', profileId)
+      .order('position');
+    if (data) setGalleryImages(data);
   };
 
   const handleSave = async () => {
@@ -330,6 +351,8 @@ export default function Dashboard() {
               onSaveLink={saveLink}
               onDeleteLink={deleteLink}
               onAvatarUpload={handleAvatarUpload}
+              galleryImages={galleryImages}
+              onGalleryChange={setGalleryImages}
             />
           )}
 
@@ -357,7 +380,7 @@ export default function Dashboard() {
         {/* Right Panel - Phone Preview */}
         {(activeTab === 'page' || activeTab === 'style') && (
           <div className="hidden lg:flex flex-shrink-0 w-[400px] items-start justify-center pt-8 sticky top-24 h-fit">
-            <PhonePreview profile={profile} customLinks={customLinks} theme={selectedTheme} font={selectedFont} />
+            <PhonePreview profile={profile} customLinks={customLinks} theme={selectedTheme} font={selectedFont} galleryImages={galleryImages} isPremium={profile.is_premium || false} />
           </div>
         )}
       </div>

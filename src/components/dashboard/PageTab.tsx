@@ -81,6 +81,8 @@ interface PageTabProps {
   onSaveLink: (link: CustomLink) => void;
   onDeleteLink: (id: string) => void;
   onAvatarUpload: (url: string) => void;
+  galleryImages: GalleryImage[];
+  onGalleryChange: (images: GalleryImage[]) => void;
 }
 
 const socialIcons = [
@@ -103,27 +105,13 @@ export function PageTab({
   onSaveLink,
   onDeleteLink,
   onAvatarUpload,
+  galleryImages,
+  onGalleryChange,
 }: PageTabProps) {
   const [activeSocial, setActiveSocial] = useState<string | null>(null);
   const [locationOpen, setLocationOpen] = useState(false);
   const [revenueOpen, setRevenueOpen] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
-  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
-
-  useEffect(() => {
-    if (profile.is_premium) {
-      fetchGalleryImages();
-    }
-  }, [profile.id, profile.is_premium]);
-
-  const fetchGalleryImages = async () => {
-    const { data } = await supabase
-      .from('gallery_images')
-      .select('*')
-      .eq('profile_id', profile.id)
-      .order('position');
-    if (data) setGalleryImages(data);
-  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -279,7 +267,7 @@ export function PageTab({
         profileId={profile.id}
         isPremium={profile.is_premium || false}
         images={galleryImages}
-        onImagesChange={setGalleryImages}
+        onImagesChange={onGalleryChange}
       />
 
       {/* Social Links */}

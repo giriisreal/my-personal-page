@@ -27,11 +27,20 @@ interface CustomLink {
   text_color?: string;
 }
 
+interface GalleryImage {
+  id: string;
+  image_url: string;
+  title?: string | null;
+  category?: string | null;
+}
+
 interface PhonePreviewProps {
   profile: Profile;
   customLinks: CustomLink[];
   theme?: string;
   font?: string;
+  galleryImages?: GalleryImage[];
+  isPremium?: boolean;
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -103,7 +112,7 @@ const isDark = (hex: string): boolean => {
   return (r * 299 + g * 587 + b * 114) / 1000 < 128;
 };
 
-export function PhonePreview({ profile, customLinks, theme = 'light', font = 'dm-sans' }: PhonePreviewProps) {
+export function PhonePreview({ profile, customLinks, theme = 'light', font = 'dm-sans', galleryImages = [], isPremium = false }: PhonePreviewProps) {
   const liveUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}/${profile.username}` 
     : `/${profile.username}`;
@@ -311,6 +320,32 @@ export function PhonePreview({ profile, customLinks, theme = 'light', font = 'dm
                 );
               })}
             </div>
+
+            {/* Journey Gallery - Premium only */}
+            {isPremium && galleryImages.length > 0 && (
+              <div className="space-y-2">
+                <p 
+                  className="text-[10px] font-semibold uppercase tracking-wider"
+                  style={{ color: darkBg ? 'rgba(255,255,255,0.6)' : '#6b7280' }}
+                >
+                  Journey Gallery
+                </p>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {galleryImages.slice(0, 6).map((img) => (
+                    <div 
+                      key={img.id}
+                      className="aspect-square rounded-lg overflow-hidden"
+                    >
+                      <img 
+                        src={img.image_url} 
+                        alt={img.title || 'Gallery image'} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Social icons */}
             <div className="flex items-center justify-center gap-4 pt-2 pb-2">
