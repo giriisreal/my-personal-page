@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { RevenueProgressBar } from '@/components/RevenueProgressBar';
+import { ParallaxScroll } from '@/components/ui/parallax-scroll';
 import { 
   Twitter, Github, Instagram, Linkedin, Globe, Youtube,
   ArrowLeft, Loader2, Sparkles, MapPin
@@ -39,6 +40,13 @@ interface CustomLink {
   color?: string;
   text_color?: string;
   live_revenue?: number;
+}
+
+interface GalleryImage {
+  id: string;
+  image_url: string;
+  title: string | null;
+  category: string | null;
 }
 
 // Theme pairs: [background, accent]
@@ -104,6 +112,7 @@ export default function Profile() {
   const { username } = useParams<{ username: string }>();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [customLinks, setCustomLinks] = useState<CustomLink[]>([]);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [email, setEmail] = useState('');
@@ -146,6 +155,17 @@ export default function Profile() {
       .order('position');
     
     if (linksData) setCustomLinks(linksData);
+
+    // Fetch gallery images for premium users
+    if (profileData.is_premium) {
+      const { data: galleryData } = await supabase
+        .from('gallery_images')
+        .select('*')
+        .eq('profile_id', profileData.id)
+        .order('position');
+      if (galleryData) setGalleryImages(galleryData);
+    }
+
     setLoading(false);
   };
 
@@ -387,6 +407,23 @@ export default function Profile() {
             ) : (
               <div className="bg-white rounded-2xl p-12 border border-gray-100 text-center">
                 <p className="text-gray-500">No projects added yet</p>
+              </div>
+            )}
+
+            {/* Journey Gallery for Premium Users */}
+            {profile?.is_premium && galleryImages.length > 0 && (
+              <div className="mt-8">
+                <h2 className="text-xl font-bold mb-4" style={{ color: darkBg ? '#fff' : '#1a1a1a' }}>
+                  Journey
+                </h2>
+                <ParallaxScroll 
+                  images={galleryImages.map(img => ({
+                    id: img.id,
+                    url: img.image_url,
+                    title: img.title || undefined,
+                    category: img.category || undefined,
+                  }))}
+                />
               </div>
             )}
           </div>

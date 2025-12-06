@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { AvatarUpload } from '@/components/AvatarUpload';
 import { SortableLink } from '@/components/SortableLink';
+import { GalleryManager } from '@/components/GalleryManager';
+import { supabase } from '@/integrations/supabase/client';
 import {
   DndContext,
   closestCenter,
@@ -40,6 +42,7 @@ interface Profile {
   website_url: string | null;
   location?: string | null;
   revenue?: string | null;
+  is_premium?: boolean;
 }
 
 interface CustomLink {
@@ -57,6 +60,14 @@ interface CustomLink {
   lemonsqueezy_store_id?: string;
   live_revenue?: number;
   revenue_updated_at?: string;
+}
+
+interface GalleryImage {
+  id: string;
+  image_url: string;
+  title: string | null;
+  category: string | null;
+  position: number;
 }
 
 interface PageTabProps {
@@ -97,6 +108,22 @@ export function PageTab({
   const [locationOpen, setLocationOpen] = useState(false);
   const [revenueOpen, setRevenueOpen] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+
+  useEffect(() => {
+    if (profile.is_premium) {
+      fetchGalleryImages();
+    }
+  }, [profile.id, profile.is_premium]);
+
+  const fetchGalleryImages = async () => {
+    const { data } = await supabase
+      .from('gallery_images')
+      .select('*')
+      .eq('profile_id', profile.id)
+      .order('position');
+    if (data) setGalleryImages(data);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -246,6 +273,14 @@ export function PageTab({
           </div>
         </SortableContext>
       </DndContext>
+
+      {/* Journey Gallery - Premium Feature */}
+      <GalleryManager
+        profileId={profile.id}
+        isPremium={profile.is_premium || false}
+        images={galleryImages}
+        onImagesChange={setGalleryImages}
+      />
 
       {/* Social Links */}
       <div className="border-t border-border/50 pt-6 space-y-4">

@@ -335,7 +335,15 @@ export default function Dashboard() {
 
           {activeTab === 'style' && <StyleTab profileId={profile.id} initialFont={profile.font || 'dm-sans'} initialTheme={profile.theme || 'light'} onStyleChange={handleStyleChange} />}
 
-          {activeTab === 'stats' && <StatsTab pageViews={pageViews} profileId={profile.id} />}
+          {activeTab === 'stats' && (
+            <StatsTab 
+              pageViews={pageViews} 
+              profileId={profile.id}
+              isPremium={profile.is_premium || false}
+              profileUrl={`${window.location.origin}/${profile.username}`}
+              avatarUrl={profile.avatar_url}
+            />
+          )}
 
           {activeTab === 'settings' && (
             <SettingsTab 
