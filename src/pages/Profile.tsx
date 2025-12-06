@@ -241,8 +241,7 @@ export default function Profile() {
       <div className="container mx-auto px-4 py-8 lg:py-12">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 max-w-7xl mx-auto">
           {/* Left Sidebar - Profile Info */}
-          <div className="lg:w-80 lg:flex-shrink-0">
-            <div className="lg:sticky lg:top-8">
+          <div className="lg:w-80 lg:flex-shrink-0 lg:self-start lg:sticky lg:top-8">
               {/* Avatar */}
               <div className="w-40 h-40 rounded-full flex items-center justify-center text-white font-bold text-5xl mx-auto lg:mx-0 mb-6 overflow-hidden shadow-lg border-4 border-white" style={{ backgroundColor: accentColor }}>
                 {profile?.avatar_url ? (
@@ -336,8 +335,7 @@ export default function Profile() {
                     Build your Entrepage
                   </Button>
                 </Link>
-              )}
-            </div>
+            )}
           </div>
 
           {/* Right Side - Project Cards Grid */}
