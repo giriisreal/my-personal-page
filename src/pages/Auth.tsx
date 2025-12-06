@@ -80,9 +80,7 @@ export default function Auth() {
         
         <div className="bg-card rounded-2xl p-8 shadow-lg border border-border/50">
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-primary-foreground" />
-            </div>
+            
             <h1 className="text-2xl font-bold text-card-foreground">Entrepage</h1>
           </div>
           
