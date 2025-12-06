@@ -1,10 +1,11 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Image, Plus, Trash2, Loader2, Lock, Upload } from "lucide-react";
-import { ThreeDPhotoCarousel } from "@/components/ui/3d-carousel";
+import { cn } from "@/lib/utils";
 
 interface GalleryImage {
   id: string;
@@ -165,66 +166,61 @@ export function GalleryManager({ profileId, isPremium, images, onImagesChange }:
           <p className="text-sm text-muted-foreground">Click to upload your first gallery image</p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {/* 3D Carousel Preview */}
-          <div className="bg-muted/30 rounded-xl overflow-hidden">
-            <ThreeDPhotoCarousel images={images.map(img => img.image_url)} />
-          </div>
-
-          {/* Image Management Grid */}
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-            {images.map((image) => (
-              <div key={image.id} className="relative group aspect-square">
-                <img
-                  src={image.image_url}
-                  alt={image.title || "Gallery image"}
-                  className="w-full h-full object-cover rounded-lg"
-                />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col justify-between p-2">
-                  {editingId === image.id ? (
-                    <div className="space-y-1">
-                      <Input
-                        placeholder="Title"
-                        defaultValue={image.title || ""}
-                        className="h-6 text-xs bg-white/10 border-white/20 text-white placeholder:text-white/50"
-                        onBlur={(e) => updateImage(image.id, { title: e.target.value })}
-                      />
-                      <select
-                        defaultValue={image.category || "milestone"}
-                        onChange={(e) => updateImage(image.id, { category: e.target.value })}
-                        className="w-full h-6 text-xs bg-white/10 border border-white/20 rounded text-white"
-                      >
-                        {CATEGORIES.map((cat) => (
-                          <option key={cat.value} value={cat.value} className="bg-gray-800">
-                            {cat.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setEditingId(image.id)}
-                      className="text-left"
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {images.map((image) => (
+            <div key={image.id} className="relative group aspect-square">
+              <img
+                src={image.image_url}
+                alt={image.title || "Gallery image"}
+                className="w-full h-full object-cover rounded-xl"
+              />
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex flex-col justify-between p-3">
+                {editingId === image.id ? (
+                  <div className="space-y-2">
+                    <Input
+                      placeholder="Title"
+                      defaultValue={image.title || ""}
+                      className="h-8 text-sm bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                      onBlur={(e) => updateImage(image.id, { title: e.target.value })}
+                    />
+                    <select
+                      defaultValue={image.category || "milestone"}
+                      onChange={(e) => updateImage(image.id, { category: e.target.value })}
+                      className="w-full h-8 text-sm bg-white/10 border border-white/20 rounded-md text-white"
                     >
-                      <p className="text-white font-medium text-xs truncate">
-                        {image.title || "Edit"}
-                      </p>
-                    </button>
-                  )}
-                  <div className="flex justify-end">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6 text-white hover:text-red-400 hover:bg-red-500/20"
-                      onClick={() => deleteImage(image.id, image.image_url)}
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </Button>
+                      {CATEGORIES.map((cat) => (
+                        <option key={cat.value} value={cat.value} className="bg-gray-800">
+                          {cat.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
+                ) : (
+                  <button
+                    onClick={() => setEditingId(image.id)}
+                    className="text-left"
+                  >
+                    <p className="text-white font-medium text-sm truncate">
+                      {image.title || "Click to add title"}
+                    </p>
+                    {image.category && (
+                      <span className="text-white/70 text-xs capitalize">{image.category}</span>
+                    )}
+                  </button>
+                )}
+                <div className="flex justify-end">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-white hover:text-red-400 hover:bg-red-500/20"
+                    onClick={() => deleteImage(image.id, image.image_url)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
