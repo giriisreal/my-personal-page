@@ -4,11 +4,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { RevenueProgressBar } from '@/components/RevenueProgressBar';
 import { ParallaxScroll } from '@/components/ui/parallax-scroll';
+import { ProjectCard } from '@/components/ProjectCard';
 import { 
-  Twitter, Github, Instagram, Linkedin, Globe, Youtube,
-  ArrowLeft, Loader2, Sparkles, MapPin
+  Twitter, Instagram, Linkedin, Youtube,
+  Loader2, Sparkles, MapPin
 } from 'lucide-react';
 
 interface Profile {
@@ -40,6 +40,8 @@ interface CustomLink {
   color?: string;
   text_color?: string;
   live_revenue?: number;
+  demo_video_url?: string;
+  pitch_video_url?: string;
 }
 
 interface GalleryImage {
@@ -105,8 +107,6 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   'acquired': { label: 'Acquired', color: 'bg-yellow-100 text-yellow-700' },
   'discontinued': { label: 'Discontinued', color: 'bg-red-100 text-red-700' },
 };
-
-const isImageUrl = (icon?: string) => icon?.startsWith('http') || icon?.startsWith('data:');
 
 export default function Profile() {
   const { username } = useParams<{ username: string }>();
@@ -338,67 +338,25 @@ export default function Profile() {
             )}
           </div>
 
-          {/* Right Side - Project Cards Grid */}
+          {/* Right Side - Project Cards */}
           <div className="flex-1">
             {customLinks.length > 0 ? (
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-6">
               {customLinks.map((link) => {
                   const statusInfo = STATUS_LABELS[link.status || 'active'] || STATUS_LABELS.active;
-                  const isLarge = link.size === 'large';
                   const linkColor = link.color || 'hsl(150, 80%, 35%)';
                   const textColor = link.text_color || 'white';
+                  const hasVideos = !!(link.demo_video_url || link.pitch_video_url);
                   
                   return (
-                    <a
+                    <ProjectCard 
                       key={link.id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`rounded-2xl p-5 border border-gray-100 hover:shadow-lg hover:scale-[1.02] transition-all group ${isLarge ? 'md:col-span-2' : ''}`}
-                      style={{ backgroundColor: linkColor }}
-                    >
-                      {/* Card Header */}
-                      <div className="flex items-start gap-3">
-                        {/* Icon */}
-                        <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0 overflow-hidden">
-                          {isImageUrl(link.icon) ? (
-                            <img src={link.icon} alt="" className="w-full h-full object-cover rounded-xl" />
-                          ) : (
-                            <span className="text-2xl">{link.icon || '🚀'}</span>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-lg" style={{ color: textColor }}>
-                            {link.title || 'Untitled'}
-                          </h3>
-                          <p className="text-sm" style={{ color: textColor, opacity: 0.8 }}>
-                            {link.url ? link.url.replace(/^https?:\/\//, '').split('/')[0] : 'No description'}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      {/* Status Badge & Category */}
-                      <div className="mt-4 flex items-center gap-2 flex-wrap">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
-                          {statusInfo.label}
-                        </span>
-                        {link.category && (
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/20" style={{ color: textColor }}>
-                            {link.category}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Revenue Progress Bar */}
-                      {link.live_revenue !== null && link.live_revenue !== undefined && (
-                        <div className="mt-4 bg-white/10 rounded-lg p-3 [&_.bg-secondary]:bg-white/20">
-                          <RevenueProgressBar 
-                            revenue={link.live_revenue} 
-                            color={textColor}
-                          />
-                        </div>
-                      )}
-                    </a>
+                      link={link}
+                      statusInfo={statusInfo}
+                      linkColor={linkColor}
+                      textColor={textColor}
+                      hasVideos={hasVideos}
+                    />
                   );
                 })}
               </div>

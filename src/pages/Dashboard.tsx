@@ -49,6 +49,8 @@ interface CustomLink {
   lemonsqueezy_store_id?: string;
   live_revenue?: number;
   revenue_updated_at?: string;
+  demo_video_url?: string;
+  pitch_video_url?: string;
 }
 
 interface PageView {
