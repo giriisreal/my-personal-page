@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { GripVertical, Trash2, Link2, DollarSign, Tag, Play, Maximize2, Check, ImagePlus, Palette, RefreshCw, Loader2, Type } from 'lucide-react';
+import { GripVertical, Trash2, Link2, DollarSign, Tag, Play, Maximize2, Check, ImagePlus, Palette, RefreshCw, Loader2, Type, Video } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -27,6 +27,8 @@ interface CustomLink {
   lemonsqueezy_store_id?: string;
   live_revenue?: number;
   revenue_updated_at?: string;
+  demo_video_url?: string;
+  pitch_video_url?: string;
 }
 
 const TEXT_COLOR_OPTIONS = [
@@ -91,7 +93,10 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
   const [sizeOpen, setSizeOpen] = useState(false);
   const [colorOpen, setColorOpen] = useState(false);
   const [textColorOpen, setTextColorOpen] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
   const [tempUrl, setTempUrl] = useState(link.url);
+  const [tempDemoVideo, setTempDemoVideo] = useState(link.demo_video_url || '');
+  const [tempPitchVideo, setTempPitchVideo] = useState(link.pitch_video_url || '');
   const [uploading, setUploading] = useState(false);
   const [fetchingRevenue, setFetchingRevenue] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -254,7 +259,15 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
     setTextColorOpen(false);
   };
 
+  const handleSaveVideos = () => {
+    onUpdate(link.id, 'demo_video_url', tempDemoVideo || null);
+    onUpdate(link.id, 'pitch_video_url', tempPitchVideo || null);
+    onSave({ ...link, demo_video_url: tempDemoVideo || undefined, pitch_video_url: tempPitchVideo || undefined });
+    setVideoOpen(false);
+  };
+
   const hasRevenue = link.live_revenue !== null && link.live_revenue !== undefined;
+  const hasVideos = !!(link.demo_video_url || link.pitch_video_url);
 
   return (
     <div
@@ -346,6 +359,48 @@ export function SortableLink({ link, onUpdate, onSave, onDelete }: SortableLinkP
                 className="w-full h-9 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium rounded-lg"
               >
                 Save
+              </button>
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        {/* Pitch Videos */}
+        <Popover open={videoOpen} onOpenChange={setVideoOpen}>
+          <PopoverTrigger asChild>
+            <button className={cn(
+              "w-8 h-8 rounded-lg flex items-center justify-center transition-colors",
+              hasVideos ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+            )}>
+              <Video className="w-4 h-4" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80 p-3">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Demo Video URL</label>
+                <Input
+                  value={tempDemoVideo}
+                  onChange={(e) => setTempDemoVideo(e.target.value)}
+                  placeholder="https://youtube.com/watch?v=..."
+                  className="placeholder:text-muted-foreground/50"
+                />
+                <p className="text-xs text-muted-foreground">Showcase your product in action</p>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Elevator Pitch Video URL</label>
+                <Input
+                  value={tempPitchVideo}
+                  onChange={(e) => setTempPitchVideo(e.target.value)}
+                  placeholder="https://youtube.com/watch?v=..."
+                  className="placeholder:text-muted-foreground/50"
+                />
+                <p className="text-xs text-muted-foreground">60-second pitch for investors</p>
+              </div>
+              <button
+                onClick={handleSaveVideos}
+                className="w-full h-9 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium rounded-lg"
+              >
+                Save Videos
               </button>
             </div>
           </PopoverContent>

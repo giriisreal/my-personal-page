@@ -19,11 +19,13 @@ export type Database = {
           category: string | null
           color: string | null
           created_at: string
+          demo_video_url: string | null
           icon: string | null
           id: string
           lemonsqueezy_api_key: string | null
           lemonsqueezy_store_id: string | null
           live_revenue: number | null
+          pitch_video_url: string | null
           position: number | null
           profile_id: string
           razorpay_api_key: string | null
@@ -40,11 +42,13 @@ export type Database = {
           category?: string | null
           color?: string | null
           created_at?: string
+          demo_video_url?: string | null
           icon?: string | null
           id?: string
           lemonsqueezy_api_key?: string | null
           lemonsqueezy_store_id?: string | null
           live_revenue?: number | null
+          pitch_video_url?: string | null
           position?: number | null
           profile_id: string
           razorpay_api_key?: string | null
@@ -61,11 +65,13 @@ export type Database = {
           category?: string | null
           color?: string | null
           created_at?: string
+          demo_video_url?: string | null
           icon?: string | null
           id?: string
           lemonsqueezy_api_key?: string | null
           lemonsqueezy_store_id?: string | null
           live_revenue?: number | null
+          pitch_video_url?: string | null
           position?: number | null
           profile_id?: string
           razorpay_api_key?: string | null
